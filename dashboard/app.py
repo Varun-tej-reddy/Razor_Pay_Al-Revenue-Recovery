@@ -1409,11 +1409,11 @@ with track_tab_b2c:
         action_type = active_row["proposed_action"]
 
         if action_type in ("send_new_payment_link", "send_reminder_alt_method", "send_gentle_nudge"):
-            st.markdown("<br>", unsafe_allow_html=True)
-            act_col1, act_col2 = st.columns([1.5, 1])
+            if not is_recovered:
+                st.markdown("<br>", unsafe_allow_html=True)
+                act_col1, act_col2 = st.columns([1.5, 1])
 
-            with act_col1:
-                if not is_recovered:
+                with act_col1:
                     if st.button(
                         f"💳 Authorize ₹{active_row['amount']:,.2f} via {vpa_handle}",
                         key=f"btn_pay_{active_row['transaction_id']}",
@@ -1433,18 +1433,15 @@ with track_tab_b2c:
                         st.balloons()
                         st.toast(f"✅ Transaction Authenticated: ₹{active_row['amount']:,.2f} debited via {vpa_handle}", icon="🟢")
                         st.rerun()
-                else:
-                    render_html(f"""
-                    <div style="background: #d1fae5; border: 1.5px solid #6ee7b7; border-radius: 12px; padding: 14px; color: #065f46 !important; font-size: 13px; font-weight: 800; text-align: center;" role="status" aria-live="polite">
-                        ✓ Payment Captured & Settled to Escrow! (Debited from {paying_name})
-                    </div>
-                    """)
 
-            with act_col2:
-                if is_recovered:
-                    st.link_button("🌐 Open Settled Razorpay Receipt ↗", portal_http_url, use_container_width=True, help="Open verified settled tax receipt in new tab")
-                else:
+                with act_col2:
                     st.link_button("🌐 Open Razorpay Recovery Portal ↗", portal_http_url, use_container_width=True, help="Open recovery payment portal in new tab")
+            else:
+                render_html(f"""
+                <div style="background: #d1fae5; border: 1.5px solid #6ee7b7; border-radius: 12px; padding: 14px; color: #065f46 !important; font-size: 13px; font-weight: 800; text-align: center; margin-top: 14px;" role="status" aria-live="polite">
+                    ✓ Payment Captured & Settled to Escrow! (Debited from {paying_name})
+                </div>
+                """)
 
         elif action_type == "escalate_to_human":
             render_html("""
@@ -1453,10 +1450,8 @@ with track_tab_b2c:
                 Guardrail policy intercepted automated bot messaging. Dispatched priority white-glove ticket to enterprise account manager.
             </div>
             """)
-            st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
-            if is_recovered:
-                st.link_button("🌐 Open Settled Razorpay Receipt ↗", portal_http_url, use_container_width=True)
-            else:
+            if not is_recovered:
+                st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
                 st.link_button("🌐 Open Razorpay Recovery Portal ↗", portal_http_url, use_container_width=True)
         else:
             render_html("""
@@ -1464,10 +1459,8 @@ with track_tab_b2c:
                 🛡️ <strong>Anti-Fatigue Guardrail Enforced:</strong> Customer has reached contact threshold (>=2 prior touches). Automated messages stopped to preserve merchant reputation.
             </div>
             """)
-            st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
-            if is_recovered:
-                st.link_button("🌐 Open Settled Razorpay Receipt ↗", portal_http_url, use_container_width=True)
-            else:
+            if not is_recovered:
+                st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
                 st.link_button("🌐 Open Razorpay Recovery Portal ↗", portal_http_url, use_container_width=True)
 
     # --- Lower Drawer: Root Causes & Visual Telemetry ---
@@ -1949,48 +1942,53 @@ with track_tab_b2b:
         </div>
         """)
         
-        st.markdown("##### ⚡ Autonomous Dunning & Settlement Actions")
-        b2b_act_col1, b2b_act_col2, b2b_act_col3 = st.columns(3)
-        
-        with b2b_act_col1:
-            if st.button("⚖️ Send GST Warning", key=f"gst_{inv_id}", use_container_width=True, help="Send statutory GST Sec 16(2) Input Tax Credit reversal notice"):
-                res = execute_b2b_chase_action(inv_id, "send_gst_warning")
-                st.session_state.b2b_action_feedback = res
-                st.toast("⚖️ Formal GST Section 16(2) Notice Dispatched!", icon="📋")
-                show_gst_warning_dialog(active_inv, res)
-                
-        with b2b_act_col2:
-            if st.button("💰 Offer 2% Discount", key=f"disc_{inv_id}", use_container_width=True, help="Offer 2% prompt settlement cash discount if paid within 48 hours"):
-                st.session_state[f"b2b_discount_{inv_id}"] = True
-                res = execute_b2b_chase_action(inv_id, "apply_cash_discount")
-                st.session_state.b2b_action_feedback = res
-                st.toast("💰 2% Net-30 Cash Discount Applied & Price Updated!", icon="⚡")
-                show_discount_dialog(active_inv, res)
-                
-        with b2b_act_col3:
-            if st.button("📄 Generate SOA", key=f"soa_{inv_id}", use_container_width=True, help="Generate comprehensive Statement of Account with open ledgers"):
-                res = execute_b2b_chase_action(inv_id, "send_soa")
-                st.session_state.b2b_action_feedback = res
-                st.toast("📄 Statement of Account (SOA) Generated!", icon="📄")
-                show_soa_dialog(active_inv, res)
-                
-        b2b_sec_col1, b2b_sec_col2 = st.columns(2)
-        with b2b_sec_col1:
-            if st.button("🚨 Escalate to CFO / Legal", key=f"esc_{inv_id}", use_container_width=True):
-                res = execute_b2b_chase_action(inv_id, "escalate_legal")
-                st.session_state.b2b_action_feedback = res
-                st.toast("🚨 Escalation dispatched to CFO & Legal counsel!", icon="⚖️")
-                show_cfo_legal_dialog(active_inv, res)
-        with b2b_sec_col2:
-            if not is_paid:
+        if not is_paid:
+            st.markdown("##### ⚡ Autonomous Dunning & Settlement Actions")
+            b2b_act_col1, b2b_act_col2, b2b_act_col3 = st.columns(3)
+            
+            with b2b_act_col1:
+                if st.button("⚖️ Send GST Warning", key=f"gst_{inv_id}", use_container_width=True, help="Send statutory GST Sec 16(2) Input Tax Credit reversal notice"):
+                    res = execute_b2b_chase_action(inv_id, "send_gst_warning")
+                    st.session_state.b2b_action_feedback = res
+                    st.toast("⚖️ Formal GST Section 16(2) Notice Dispatched!", icon="📋")
+                    show_gst_warning_dialog(active_inv, res)
+                    
+            with b2b_act_col2:
+                if st.button("💰 Offer 2% Discount", key=f"disc_{inv_id}", use_container_width=True, help="Offer 2% prompt settlement cash discount if paid within 48 hours"):
+                    st.session_state[f"b2b_discount_{inv_id}"] = True
+                    res = execute_b2b_chase_action(inv_id, "apply_cash_discount")
+                    st.session_state.b2b_action_feedback = res
+                    st.toast("💰 2% Net-30 Cash Discount Applied & Price Updated!", icon="⚡")
+                    show_discount_dialog(active_inv, res)
+                    
+            with b2b_act_col3:
+                if st.button("📄 Generate SOA", key=f"soa_{inv_id}", use_container_width=True, help="Generate comprehensive Statement of Account with open ledgers"):
+                    res = execute_b2b_chase_action(inv_id, "send_soa")
+                    st.session_state.b2b_action_feedback = res
+                    st.toast("📄 Statement of Account (SOA) Generated!", icon="📄")
+                    show_soa_dialog(active_inv, res)
+                    
+            b2b_sec_col1, b2b_sec_col2 = st.columns(2)
+            with b2b_sec_col1:
+                if st.button("🚨 Escalate to CFO / Legal", key=f"esc_{inv_id}", use_container_width=True):
+                    res = execute_b2b_chase_action(inv_id, "escalate_legal")
+                    st.session_state.b2b_action_feedback = res
+                    st.toast("🚨 Escalation dispatched to CFO & Legal counsel!", icon="⚖️")
+                    show_cfo_legal_dialog(active_inv, res)
+            with b2b_sec_col2:
                 if st.button("✓ Reconcile & Mark Paid", key=f"pay_{inv_id}", use_container_width=True):
                     res = execute_b2b_chase_action(inv_id, "mark_paid")
                     st.session_state.b2b_action_feedback = res
                     st.balloons()
                     st.toast(f"✓ Invoice {inv_id} Reconciled & Marked Paid!", icon="🟢")
                     st.rerun()
-            else:
-                st.success("✓ Invoice Settled & Reconciled with ERP")
+        else:
+            st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
+            render_html("""
+            <div style="background: #d1fae5; border: 1.5px solid #6ee7b7; border-radius: 12px; padding: 16px; color: #065f46 !important; font-size: 14px; font-weight: 800; text-align: center; box-shadow: 0 4px 12px rgba(16,185,129,0.1);" role="status">
+                ✓ Invoice Settled & Reconciled with ERP (Payment Verified • Escrow Closed)
+            </div>
+            """)
 
 with track_tab_chat:
     st.markdown("### 💬 Hinglish Conversational AI Recovery Bot & Voice Simulator")
