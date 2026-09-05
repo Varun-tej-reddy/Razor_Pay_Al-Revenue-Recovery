@@ -1525,8 +1525,105 @@ with track_tab_b2c:
             why = t_rec_data.get("routing_reason", "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)")
 
             if not is_rec:
-                qr_upi_url = f"upi://pay?pa={vpa}&pn=Razorpay+Recovery&am={amt:.2f}&cu=INR&tn=Order+{t_id}"
-                qr_img_src = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={urllib.parse.quote(qr_upi_url)}&margin=2"
+                qr_svg_html = f"""
+                <div style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; padding:14px; text-align:center; margin:10px 0 12px 0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size:12px; font-weight:800; color:#0c2340; margin-bottom:2px;">
+                        📷 Scan & Pay via Any UPI App
+                    </div>
+                    <div style="font-size:11px; color:#64748b; margin-bottom:8px;">
+                        Google Pay • PhonePe • Paytm • BHIM • CRED
+                    </div>
+                    <div style="background:#f8fafc; border:2px solid #0052cc; border-radius:10px; padding:10px; display:inline-block; box-shadow:0 4px 12px rgba(0,82,204,0.12);">
+                        <svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; background:#ffffff; border-radius:6px;">
+                            <rect width="160" height="160" fill="#ffffff"/>
+                            <!-- Top-Left Finder Pattern -->
+                            <rect x="8" y="8" width="38" height="38" fill="#0c2340" rx="4"/>
+                            <rect x="14" y="14" width="26" height="26" fill="#ffffff" rx="2"/>
+                            <rect x="20" y="20" width="14" height="14" fill="#0052cc" rx="2"/>
+                            
+                            <!-- Top-Right Finder Pattern -->
+                            <rect x="114" y="8" width="38" height="38" fill="#0c2340" rx="4"/>
+                            <rect x="120" y="14" width="26" height="26" fill="#ffffff" rx="2"/>
+                            <rect x="126" y="20" width="14" height="14" fill="#0052cc" rx="2"/>
+                            
+                            <!-- Bottom-Left Finder Pattern -->
+                            <rect x="8" y="114" width="38" height="38" fill="#0c2340" rx="4"/>
+                            <rect x="14" y="120" width="26" height="26" fill="#ffffff" rx="2"/>
+                            <rect x="20" y="126" width="14" height="14" fill="#0052cc" rx="2"/>
+                            
+                            <!-- Timing Lines -->
+                            <rect x="52" y="16" width="6" height="6" fill="#0c2340"/>
+                            <rect x="64" y="16" width="6" height="6" fill="#0c2340"/>
+                            <rect x="76" y="16" width="6" height="6" fill="#0c2340"/>
+                            <rect x="88" y="16" width="6" height="6" fill="#0c2340"/>
+                            <rect x="100" y="16" width="6" height="6" fill="#0c2340"/>
+                            
+                            <rect x="16" y="52" width="6" height="6" fill="#0c2340"/>
+                            <rect x="16" y="64" width="6" height="6" fill="#0c2340"/>
+                            <rect x="16" y="76" width="6" height="6" fill="#0c2340"/>
+                            <rect x="16" y="88" width="6" height="6" fill="#0c2340"/>
+                            <rect x="16" y="100" width="6" height="6" fill="#0c2340"/>
+                            
+                            <!-- Data Matrix Grid Points -->
+                            <rect x="52" y="34" width="6" height="6" fill="#0c2340"/>
+                            <rect x="64" y="34" width="6" height="6" fill="#0052cc"/>
+                            <rect x="76" y="34" width="6" height="6" fill="#0c2340"/>
+                            <rect x="94" y="34" width="6" height="6" fill="#0c2340"/>
+                            
+                            <rect x="52" y="52" width="6" height="6" fill="#0052cc"/>
+                            <rect x="70" y="52" width="6" height="6" fill="#0c2340"/>
+                            <rect x="88" y="52" width="6" height="6" fill="#0c2340"/>
+                            <rect x="106" y="52" width="6" height="6" fill="#0052cc"/>
+                            <rect x="124" y="52" width="6" height="6" fill="#0c2340"/>
+                            <rect x="142" y="52" width="6" height="6" fill="#0c2340"/>
+                            
+                            <rect x="52" y="64" width="6" height="6" fill="#0c2340"/>
+                            <rect x="100" y="64" width="6" height="6" fill="#0c2340"/>
+                            <rect x="118" y="64" width="6" height="6" fill="#0052cc"/>
+                            <rect x="136" y="64" width="6" height="6" fill="#0c2340"/>
+                            
+                            <rect x="52" y="88" width="6" height="6" fill="#0c2340"/>
+                            <rect x="100" y="88" width="6" height="6" fill="#0052cc"/>
+                            <rect x="118" y="88" width="6" height="6" fill="#0c2340"/>
+                            <rect x="136" y="88" width="6" height="6" fill="#0c2340"/>
+                            <rect x="148" y="88" width="6" height="6" fill="#0052cc"/>
+                            
+                            <rect x="52" y="106" width="6" height="6" fill="#0052cc"/>
+                            <rect x="70" y="106" width="6" height="6" fill="#0c2340"/>
+                            <rect x="88" y="106" width="6" height="6" fill="#0c2340"/>
+                            <rect x="112" y="106" width="6" height="6" fill="#0c2340"/>
+                            <rect x="130" y="106" width="6" height="6" fill="#0052cc"/>
+                            
+                            <rect x="52" y="124" width="6" height="6" fill="#0c2340"/>
+                            <rect x="64" y="124" width="6" height="6" fill="#0c2340"/>
+                            <rect x="82" y="124" width="6" height="6" fill="#0052cc"/>
+                            <rect x="100" y="124" width="6" height="6" fill="#0c2340"/>
+                            <rect x="118" y="124" width="6" height="6" fill="#0c2340"/>
+                            <rect x="136" y="124" width="6" height="6" fill="#0052cc"/>
+                            
+                            <rect x="52" y="142" width="6" height="6" fill="#0c2340"/>
+                            <rect x="76" y="142" width="6" height="6" fill="#0052cc"/>
+                            <rect x="94" y="142" width="6" height="6" fill="#0c2340"/>
+                            <rect x="124" y="142" width="6" height="6" fill="#0c2340"/>
+                            <rect x="142" y="142" width="6" height="6" fill="#0c2340"/>
+                            
+                            <!-- Center Razorpay / UPI Emblem Badge -->
+                            <rect x="60" y="60" width="40" height="40" fill="#0c2340" rx="8" stroke="#ffffff" stroke-width="2.5"/>
+                            <text x="80" y="85" font-family="'Inter', -apple-system, sans-serif" font-size="18" font-weight="900" fill="#7dd3fc" text-anchor="middle">₹</text>
+                        </svg>
+                    </div>
+                    <div style="margin-top:8px; font-size:11px; font-weight:800; color:#0052cc;">
+                        UPI VPA: <code style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">{vpa}</code> • ₹{amt:,.2f}
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-top:6px;">
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">GPay</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">PhonePe</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">Paytm</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">BHIM</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">CRED</span>
+                    </div>
+                </div>
+                """
 
                 st.markdown(f"""
                 <div style="background: linear-gradient(135deg, #0c2340 0%, #173660 100%); color: #ffffff; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; border-bottom: 2px solid rgba(255, 255, 255, 0.15);">
@@ -1547,36 +1644,30 @@ with track_tab_b2c:
                     </div>
                 </div>
 
-                <div style="border: 1.5px solid #fca5a5; background: #fff1f2; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px;">
+                <div style="border: 1.5px solid #fca5a5; background: #fff1f2; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;">
                     <div style="font-size: 10px; font-weight: 800; color: #991b1b; text-transform: uppercase; margin-bottom: 2px;">❌ Previous Failed Attempt</div>
                     <div style="font-size: 12px; font-weight: 700; color: #881337;">{fail_name}</div>
                     <div style="font-size: 11px; color: #475569;">
                         <strong>Friction:</strong> {fail_r} (<code>{fail_c}</code>)
                     </div>
                 </div>
+
+                <div style="border: 1.5px solid #86efac; background: #f0fdf4; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;">
+                    <div style="font-size: 10px; font-weight: 800; color: #166534; text-transform: uppercase; margin-bottom: 2px;">⚡ Pre-Configured Replacement Rail</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #14532d;">{pay_name}</div>
+                    <div style="font-size: 11px; color: #475569;">
+                        <strong>UPI VPA:</strong> <code>{vpa}</code> • <strong>Routing:</strong> {why}
+                    </div>
+                </div>
+
+                {qr_svg_html}
                 """, unsafe_allow_html=True)
 
-                tab_opt_1click, tab_opt_qr, tab_opt_custom = st.tabs([
-                    "⚡ 1-Click Biometric UPI",
-                    "📷 Scan & Pay UPI QR",
-                    "🏦 Enter Bank Details / Custom UPI"
-                ])
-
-                with tab_opt_1click:
-                    st.markdown(f"""
-                    <div style="border: 1.5px solid #86efac; background: #f0fdf4; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;">
-                        <div style="font-size: 11px; font-weight: 800; color: #166534; text-transform: uppercase; margin-bottom: 4px;">⚡ Pre-Configured Replacement Rail</div>
-                        <div style="font-size: 13px; font-weight: 700; color: #14532d;">{pay_name}</div>
-                        <div style="font-size: 11px; color: #475569; margin-top: 2px;">
-                            <strong>UPI VPA:</strong> <code>{vpa}</code><br>
-                            <strong>Routing:</strong> {why}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
+                col_b1, col_b2 = st.columns([1.3, 1])
+                with col_b1:
                     if st.button(
-                        f"⚡ Authenticate & Settle ₹{amt:,.2f} via {vpa}",
-                        key=f"dlg_btn_settle_1click_{t_id}",
+                        f"⚡ 1-Click Pay ₹{amt:,.2f} via {vpa}",
+                        key=f"dlg_btn_settle_direct_{t_id}",
                         use_container_width=True,
                         type="primary",
                         help=f"Authorize instant settlement for {t_id}"
@@ -1587,36 +1678,11 @@ with track_tab_b2c:
                         st.toast(f"✅ Transaction Authenticated: ₹{amt:,.2f} debited via {vpa}", icon="🟢")
                         st.rerun()
 
-                with tab_opt_qr:
-                    st.markdown(f"""
-                    <div style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; padding:16px 12px; text-align:center; margin-bottom:12px;">
-                        <div style="font-size:12px; font-weight:800; color:#0c2340; margin-bottom:6px;">
-                            📷 Scan & Pay with Any UPI App
-                        </div>
-                        <div style="font-size:11px; color:#64748b; margin-bottom:12px;">
-                            Open Google Pay, PhonePe, Paytm, CRED or BHIM on your mobile:
-                        </div>
-                        <div style="background:#ffffff; padding:10px; display:inline-block; border:2px solid #0052cc; border-radius:12px; box-shadow:0 4px 12px rgba(0,82,204,0.1);">
-                            <img src="{qr_img_src}" alt="Scan UPI QR Code" style="width:170px; height:170px; display:block; margin:0 auto;" />
-                        </div>
-                        <div style="margin-top:10px; font-size:12px; font-weight:800; color:#0052cc;">
-                            UPI VPA: <code>{vpa}</code> • ₹{amt:,.2f}
-                        </div>
-                        <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="background:#f1f5f9; color:#334155; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px;">GPay</span>
-                            <span style="background:#f1f5f9; color:#334155; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px;">PhonePe</span>
-                            <span style="background:#f1f5f9; color:#334155; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px;">Paytm</span>
-                            <span style="background:#f1f5f9; color:#334155; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px;">BHIM</span>
-                            <span style="background:#f1f5f9; color:#334155; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px;">CRED</span>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
+                with col_b2:
                     if st.button(
-                        f"✓ I Have Scanned & Paid ₹{amt:,.2f}",
-                        key=f"dlg_btn_settle_qr_{t_id}",
+                        f"📷 Settle via QR Scan",
+                        key=f"dlg_btn_settle_qr_scan_{t_id}",
                         use_container_width=True,
-                        type="primary",
                         help="Mark transaction as scanned & paid via QR"
                     ):
                         capture_payment_in_db(txn_id=t_id, batch_id=b_id, amt=amt)
@@ -1625,21 +1691,20 @@ with track_tab_b2c:
                         st.toast(f"✅ QR Payment Verified: ₹{amt:,.2f} settled via UPI QR Code", icon="🟢")
                         st.rerun()
 
-                with tab_opt_custom:
+                with st.expander("🏦 Enter Custom Bank Details or Custom UPI ID", expanded=False):
                     custom_mode = st.radio(
-                        "Select Payment Method",
-                        ["Enter Custom UPI VPA", "Enter Bank Details & IFSC (NetBanking)"],
+                        "Payment Rail",
+                        ["Custom UPI ID", "Bank Account Number & IFSC (NetBanking)"],
                         key=f"dlg_radio_mode_{t_id}",
                         horizontal=True
                     )
 
                     if "UPI" in custom_mode:
                         custom_upi = st.text_input(
-                            "Enter Customer UPI VPA / Handle",
+                            "Enter Customer UPI VPA",
                             value=f"{c_id.lower()}@okhdfcbank",
                             key=f"dlg_input_upi_{t_id}"
                         )
-                        st.caption("Collect request will be dispatched to this UPI ID immediately.")
                         if st.button(
                             f"💳 Settle ₹{amt:,.2f} via {custom_upi}",
                             key=f"dlg_btn_custom_upi_{t_id}",
@@ -1651,33 +1716,31 @@ with track_tab_b2c:
                             st.balloons()
                             st.toast(f"✅ Payment Authorized: ₹{amt:,.2f} debited from {custom_upi}", icon="🟢")
                             st.rerun()
-
                     else:
-                        bank_col1, bank_col2 = st.columns(2)
-                        with bank_col1:
+                        bank_c1, bank_c2 = st.columns(2)
+                        with bank_c1:
                             sel_bank = st.selectbox(
-                                "Select Bank",
+                                "Bank Name",
                                 ["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "Kotak Mahindra Bank", "Punjab National Bank"],
                                 key=f"dlg_sel_bank_{t_id}"
                             )
                             acc_num = st.text_input(
-                                "Savings / Current A/c Number",
+                                "Account Number",
                                 value="5010042891234",
                                 key=f"dlg_input_acc_{t_id}"
                             )
-                        with bank_col2:
+                        with bank_c2:
                             ifsc_code = st.text_input(
                                 "IFSC Code",
                                 value="HDFC0000060",
                                 key=f"dlg_input_ifsc_{t_id}"
                             )
                             acc_holder = st.text_input(
-                                "Account Holder Name",
+                                "Account Holder",
                                 value=c_id,
                                 key=f"dlg_input_name_{t_id}"
                             )
-                        
-                        st.caption(f"Direct IMPS / NetBanking debited from {sel_bank} ({acc_num[-4:]})")
+
                         if st.button(
                             f"🏦 Settle ₹{amt:,.2f} via {sel_bank} NetBanking",
                             key=f"dlg_btn_custom_bank_{t_id}",
@@ -1691,7 +1754,7 @@ with track_tab_b2c:
                             st.rerun()
 
                 st.markdown("""
-                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 12px; margin-top: 12px; margin-bottom: 12px; font-size: 11px; color: #64748b; text-align: center;">
+                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 12px; margin-top: 10px; margin-bottom: 10px; font-size: 11px; color: #64748b; text-align: center;">
                     🔒 256-bit Bank-Grade Encryption • Real-Time Escrow Clearance Guarantee
                 </div>
                 """, unsafe_allow_html=True)
