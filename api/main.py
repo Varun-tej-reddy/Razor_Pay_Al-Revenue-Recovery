@@ -638,6 +638,33 @@ def render_payment_link_page(
             justify-content: center;
             gap: 6px;
         }}
+
+        @media (max-width: 480px) {{
+            body {{
+                padding: 10px;
+            }}
+            .checkout-container {{
+                border-radius: 14px;
+            }}
+            .header {{
+                padding: 16px;
+            }}
+            .amount-tag {{
+                font-size: 26px;
+            }}
+            .bento-fail, .bento-pass, .bento-nudge {{
+                margin-left: 14px;
+                margin-right: 14px;
+                padding: 12px;
+            }}
+            .body-sec {{
+                padding: 16px 14px;
+            }}
+            .settled-receipt-box {{
+                margin: 14px;
+                padding: 16px;
+            }}
+        }}
     </style>
 </head>
 <body>

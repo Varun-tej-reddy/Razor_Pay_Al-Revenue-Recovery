@@ -1041,6 +1041,163 @@ render_html("""
         font-size: 14px;
         margin-top: 2px;
     }
+    /* ==========================================================================
+       Comprehensive Responsive Styles (Mobile, Tablet, Desktop)
+       ========================================================================== */
+    @media (max-width: 992px) {
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .hero-main-title {
+            font-size: 30px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .block-container {
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
+        .hero-header-box {
+            padding: 16px 18px !important;
+            border-radius: 14px !important;
+            margin-bottom: 14px !important;
+        }
+        .hero-main-title {
+            font-size: 23px !important;
+            line-height: 1.25 !important;
+        }
+        .hero-tagline {
+            font-size: 13.5px !important;
+            line-height: 1.35 !important;
+            margin-bottom: 8px !important;
+        }
+        .hero-caption {
+            font-size: 11.5px !important;
+        }
+
+        /* Top Navigation Bar */
+        .rzp-navbar {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+            padding: 12px 16px !important;
+            border-radius: 14px !important;
+        }
+        .rzp-brand-group {
+            width: 100% !important;
+            justify-content: space-between !important;
+        }
+        .rzp-status-beacon {
+            font-size: 10px !important;
+            padding: 4px 10px !important;
+            align-self: flex-start !important;
+        }
+
+        /* Metric Grid 2-Column Responsive */
+        .metric-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+            margin-bottom: 16px !important;
+        }
+        .blade-card {
+            padding: 14px 12px !important;
+            border-radius: 14px !important;
+        }
+        .card-label {
+            font-size: 9.5px !important;
+            letter-spacing: 0.4px !important;
+        }
+        .card-value {
+            font-size: 20px !important;
+            margin-top: 4px !important;
+        }
+        .card-pill {
+            font-size: 9.5px !important;
+            padding: 3px 7px !important;
+            margin-top: 6px !important;
+        }
+
+        /* Streamlit Tabs Navigation Bar - Smooth Horizontal Scrolling on Mobile */
+        div[data-baseweb="tab-list"] {
+            overflow-x: auto !important;
+            flex-wrap: nowrap !important;
+            white-space: nowrap !important;
+            -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: none !important;
+            gap: 4px !important;
+            padding-bottom: 4px !important;
+        }
+        div[data-baseweb="tab-list"]::-webkit-scrollbar {
+            display: none !important;
+        }
+        button[data-baseweb="tab"] {
+            font-size: 12px !important;
+            padding: 8px 12px !important;
+            white-space: nowrap !important;
+        }
+
+        /* Touch-Friendly Buttons (42px min tap target for mobile) */
+        button[kind="primary"], button[kind="secondary"], .stButton > button {
+            min-height: 42px !important;
+            font-size: 13px !important;
+            border-radius: 8px !important;
+        }
+
+        /* Feed Cards & Terminal */
+        .feed-card {
+            padding: 12px 14px !important;
+            border-radius: 12px !important;
+        }
+        .terminal-container {
+            border-radius: 12px !important;
+            margin-top: 10px !important;
+        }
+        .terminal-topbar {
+            padding: 12px 14px !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+        }
+        .terminal-amt {
+            font-size: 18px !important;
+        }
+
+        /* Chat & Voice Bubbles */
+        .chat-bubble-user {
+            max-width: 90% !important;
+            padding: 10px 14px !important;
+            font-size: 13px !important;
+        }
+        .chat-bubble-bot {
+            max-width: 95% !important;
+            padding: 12px 14px !important;
+            font-size: 13px !important;
+        }
+
+        /* Toast on Mobile */
+        .rzp-toast-topright {
+            padding: 10px 14px !important;
+            width: calc(100vw - 32px) !important;
+            max-width: 380px !important;
+        }
+        .rzp-toast-wrapper {
+            right: 16px !important;
+            top: 12px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .metric-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .hero-main-title {
+            font-size: 20px !important;
+        }
+    }
 </style>
 """)
 
