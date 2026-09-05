@@ -20,9 +20,7 @@
 5. [Benchmark Metrics & Evaluation Report](#-5-benchmark-metrics--evaluation-report)
 6. [Live 2-Minute Jury Demo Script](#-6-live-2-minute-jury-demo-script)
 7. [Local Quickstart & Setup Guide](#-7-local-quickstart--setup-guide)
-8. [Deploying Live to Render](#-8-deploying-live-to-render)
-9. [REST API Documentation & Endpoints](#-9-rest-api-documentation--endpoints)
-10. [Test Suite Verification (46/46 Passing)](#-10-test-suite-verification-4646-passing)
+8. [Test Suite Verification (46/46 Passing)](#-10-test-suite-verification-4646-passing)
 
 ---
 
