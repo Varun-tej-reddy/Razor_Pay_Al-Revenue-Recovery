@@ -1581,15 +1581,21 @@ with track_tab_b2b:
             inv_id = inv["invoice_id"]
             is_sel = (inv_id == st.session_state.b2b_selected_inv_id)
             is_paid = (inv.get("status") == "paid")
+            is_disc = st.session_state.get(f"b2b_discount_{inv_id}", False)
             bucket = inv.get("aging_bucket", "1-15_days")
             days = inv.get("days_overdue", 0)
             
+            raw_amt = inv["amount"]
+            disc_amt = round(raw_amt * 0.98, 2) if is_disc else raw_amt
+            
             if is_paid:
                 pill_html = "<span class='feed-pill-recov'>✓ SETTLED</span>"
+            elif is_disc:
+                pill_html = f"<span style='background:#dcfce7; color:#166534; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px; border:1px solid #86efac;'>💰 2% DISC ACTIVE</span>"
             elif bucket == "30_plus_days":
                 pill_html = f"<span class='feed-pill-fail'>⚠️ {days}d OVERDUE (GST RISK)</span>"
             elif bucket == "16_30_days":
-                pill_html = f"<span style='background:#fef3c7; color:#92400e; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px; border:1px solid #fde68a;'>💰 {days}d OVERDUE (2% DISC)</span>"
+                pill_html = f"<span style='background:#fef3c7; color:#92400e; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px; border:1px solid #fde68a;'>💰 {days}d OVERDUE</span>"
             else:
                 pill_html = f"<span class='feed-pill-recov' style='background:#eff6ff; color:#0369a1; border-color:#93c5fd;'>⏱️ {days}d OVERDUE</span>"
                 
@@ -1599,7 +1605,7 @@ with track_tab_b2b:
                 <div class="feed-card {'active' if is_sel else ''}" role="region" aria-label="Invoice {inv_id}">
                     <div class="feed-header">
                         <span class="feed-id">{inv_id} • {inv['buyer_name']}</span>
-                        <span class="feed-amt">₹{inv['amount']:,.2f}</span>
+                        <span class="feed-amt">₹{disc_amt:,.2f}</span>
                     </div>
                     <div class="feed-telemetry">
                         {pill_html}
@@ -1618,10 +1624,198 @@ with track_tab_b2b:
         active_inv = next((i for i in b2b_invoices if i["invoice_id"] == st.session_state.b2b_selected_inv_id), b2b_invoices[0])
         inv_id = active_inv["invoice_id"]
         is_paid = (active_inv.get("status") == "paid")
-        gst_itc = active_inv.get("gst_itc_at_risk_inr", round(active_inv["amount"] * 0.18 / 1.18, 2))
+        is_discounted = st.session_state.get(f"b2b_discount_{inv_id}", False)
+        
+        orig_amount = active_inv["amount"]
+        discount_savings = round(orig_amount * 0.02, 2)
+        effective_amount = round(orig_amount - discount_savings, 2) if is_discounted else orig_amount
+        gst_itc = active_inv.get("gst_itc_at_risk_inr", round(effective_amount * 0.18 / 1.18, 2))
         days = active_inv.get("days_overdue", 0)
         
+        # Define Dialog Modals for GST, Discount, SOA, and CFO Legal Escalation
+        dialog_decorator = getattr(st, "dialog", getattr(st, "experimental_dialog", lambda title: lambda func: func))
+        
+        @dialog_decorator("⚖️ Statutory GST Section 16(2) Compliance Notice")
+        def show_gst_warning_dialog(inv_data, fb_data):
+            d_id = inv_data["invoice_id"]
+            d_buyer = inv_data["buyer_name"]
+            d_amt = inv_data["amount"]
+            d_itc = inv_data.get("gst_itc_at_risk_inr", round(d_amt * 0.18 / 1.18, 2))
+            d_days = inv_data.get("days_overdue", 0)
+            
+            st.markdown(f"""
+            <div style="border:1.5px solid #fca5a5; background:#fff1f2; border-radius:10px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="background:#991b1b; color:#ffffff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px;">
+                        FORMAL STATUTORY NOTICE • CGST ACT 2017
+                    </span>
+                    <span style="color:#991b1b; font-weight:700; font-size:12px;">{d_days} DAYS OVERDUE</span>
+                </div>
+                <h4 style="margin:4px 0 8px 0; color:#881337;">Statutory Input Tax Credit Reversal Advisory</h4>
+                <div style="font-size:12px; color:#475569; line-height:1.6;">
+                    <strong>Buyer / Entity:</strong> {d_buyer} (GSTIN: <code>{inv_data.get('buyer_gstin')}</code>)<br>
+                    <strong>Invoice Reference:</strong> #{d_id} • <strong>PO Number:</strong> {inv_data.get('po_number')}<br>
+                    <strong>Invoice Amount:</strong> ₹{d_amt:,.2f} • <strong>ITC Component at Risk:</strong> <strong style="color:#991b1b;">₹{d_itc:,.2f}</strong>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            notice_text = fb_data.get("notice_text") or (
+                f"To: Head of Finance & Taxation, {d_buyer}\n\n"
+                f"SUBJECT: MANDATORY REVERSAL OF INPUT TAX CREDIT UNDER SECTION 16(2)(d) OF CGST ACT, 2017 FOR INVOICE #{d_id}\n\n"
+                f"Dear Tax & Finance Team,\n\n"
+                f"This is a formal statutory communication regarding overdue Invoice #{d_id} for ₹{d_amt:,.2f}, currently {d_days} days past due.\n\n"
+                f"Under Section 16(2) second proviso of the Central Goods and Services Tax (CGST) Act, 2017, where a recipient fails to pay the supplier within 180 days from invoice date, an amount equal to the Input Tax Credit (₹{d_itc:,.2f}) must be added to your output tax liability along with 18% p.a. interest.\n\n"
+                f"To safeguard your ITC eligibility and prevent GST audit flags, please settle this invoice immediately.\n\n"
+                f"Razorpay Verified Settlement Desk\n"
+                f"Reference: RZP-GST-REV-{d_id}"
+            )
+            st.text_area("Dispatched Statutory Notice", value=notice_text, height=200, disabled=True)
+            
+            col_d1, col_d2 = st.columns([1, 1])
+            with col_d1:
+                if st.button("📧 Re-Send Certified Email", key=f"dlg_btn_email_{d_id}", use_container_width=True):
+                    st.toast(f"Statutory notice re-sent to {inv_data.get('contact_email')}", icon="📨")
+            with col_d2:
+                if st.button("✕ Close Notice", key=f"dlg_btn_close_gst_{d_id}", use_container_width=True):
+                    st.rerun()
+
+        @dialog_decorator("💰 2% Prompt Settlement Cash Discount Applied")
+        def show_discount_dialog(inv_data, fb_data):
+            d_id = inv_data["invoice_id"]
+            d_buyer = inv_data["buyer_name"]
+            d_orig = fb_data.get("original_amount") or inv_data["amount"]
+            d_save = fb_data.get("discount_savings") or round(d_orig * 0.02, 2)
+            d_net = fb_data.get("discounted_amount") or round(d_orig - d_save, 2)
+            d_link = fb_data.get("payment_link") or f"https://rzp.io/l/{d_id}_disc2pct"
+            
+            st.markdown(f"""
+            <div style="border:1.5px solid #86efac; background:#f0fdf4; border-radius:10px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="background:#166534; color:#ffffff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px;">
+                        PROMPT CASH DISCOUNT ACTIVE • 48H WINDOW
+                    </span>
+                    <span style="color:#166534; font-weight:800; font-size:13px;">SAVE ₹{d_save:,.2f}</span>
+                </div>
+                <h4 style="margin:4px 0 8px 0; color:#14532d;">Commercial Settlement Terms Adjusted</h4>
+                <div style="font-size:13px; color:#1e293b; line-height:1.7;">
+                    <strong>Buyer:</strong> {d_buyer} • <strong>Invoice:</strong> #{d_id}<br>
+                    <strong>Original Gross Invoice:</strong> <span style="text-decoration:line-through; color:#64748b;">₹{d_orig:,.2f}</span><br>
+                    <strong>Prompt Settlement Incentive (2%):</strong> <strong style="color:#16a34a;">-₹{d_save:,.2f}</strong><br>
+                    <strong>Net Payable Amount:</strong> <strong style="color:#0f172a; font-size:16px;">₹{d_net:,.2f}</strong>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("**⚡ Instant Razorpay B2B Checkout Link:**")
+            st.code(d_link, language="markdown")
+            st.info("✅ Invoice total in the dossier has been updated to the discounted price.")
+            
+            col_d1, col_d2 = st.columns([1, 1])
+            with col_d1:
+                if st.button("📲 Copy & Share Link", key=f"dlg_btn_share_disc_{d_id}", use_container_width=True):
+                    st.toast("Payment link copied to clipboard!", icon="📋")
+            with col_d2:
+                if st.button("✕ Close Window", key=f"dlg_btn_close_disc_{d_id}", use_container_width=True):
+                    st.rerun()
+
+        @dialog_decorator("📄 Statement of Account (SOA) & Open Ledger")
+        def show_soa_dialog(inv_data, fb_data):
+            d_id = inv_data["invoice_id"]
+            d_buyer = inv_data["buyer_name"]
+            d_amt = inv_data["amount"]
+            d_days = inv_data.get("days_overdue", 0)
+            
+            st.markdown(f"""
+            <div style="border:1.5px solid #bfdbfe; background:#eff6ff; border-radius:10px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="background:#1d4ed8; color:#ffffff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px;">
+                        OFFICIAL SOA LEDGER • FY 2025-26
+                    </span>
+                    <span style="color:#1e40af; font-weight:700; font-size:12px;">{d_buyer}</span>
+                </div>
+                <h4 style="margin:4px 0 8px 0; color:#1e3a8a;">Accounts Receivable & Open Debit Items</h4>
+                <div style="font-size:12px; color:#334155; line-height:1.6;">
+                    <strong>Client Account ID:</strong> ACC-RZP-{d_id[-5:]} • <strong>GSTIN:</strong> <code>{inv_data.get('buyer_gstin')}</code><br>
+                    <strong>Total Open Balance:</strong> <strong style="color:#0f172a; font-size:14px;">₹{d_amt:,.2f}</strong> • <strong>Overdue Aging:</strong> {d_days} Days (Net-30)
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            soa_text = fb_data.get("statement_of_account") or (
+                f"========================================================================\n"
+                f"              STATEMENT OF ACCOUNT (SOA) - RAZORPAY B2B DESK             \n"
+                f"========================================================================\n"
+                f"Client: {d_buyer}\n"
+                f"GSTIN:  {inv_data.get('buyer_gstin')}\n"
+                f"Period: 01-Apr-2025 to 05-Sep-2026\n"
+                f"------------------------------------------------------------------------\n"
+                f"Date         Doc #        Description                Debit (₹)     Credit (₹)   Balance (₹)\n"
+                f"------------------------------------------------------------------------\n"
+                f"2026-06-15   INV-8821     Opening Balance                                           0.00\n"
+                f"2026-07-20   #{d_id:<11} {inv_data.get('items_description', 'Enterprise Suite')[:24]:<24} {d_amt:>12,.2f}          0.00   {d_amt:>11,.2f}\n"
+                f"------------------------------------------------------------------------\n"
+                f"Total Outstanding Due:                                           ₹{d_amt:>11,.2f}\n"
+                f"Direct Settlement VPA:  razorpay.settle.{d_id.lower()}@icici\n"
+                f"Virtual Bank Account:   RZPBANK{d_id.replace('-', '')[:10]} (IFSC: RAZR0000001)\n"
+                f"========================================================================"
+            )
+            st.text_area("Full Ledger Statement", value=soa_text, height=200, disabled=True)
+            
+            col_d1, col_d2 = st.columns([1, 1])
+            with col_d1:
+                if st.button("📥 Download SOA (PDF / CSV)", key=f"dlg_btn_dl_soa_{d_id}", use_container_width=True):
+                    st.toast("Statement of Account exported to PDF!", icon="📄")
+            with col_d2:
+                if st.button("✕ Close SOA", key=f"dlg_btn_close_soa_{d_id}", use_container_width=True):
+                    st.rerun()
+
+        @dialog_decorator("🚨 Executive Legal & CFO Escalation Brief")
+        def show_cfo_legal_dialog(inv_data, fb_data):
+            d_id = inv_data["invoice_id"]
+            d_buyer = inv_data["buyer_name"]
+            d_amt = inv_data["amount"]
+            d_days = inv_data.get("days_overdue", 0)
+            
+            st.markdown(f"""
+            <div style="border:1.5px solid #f87171; background:#fef2f2; border-radius:10px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="background:#b91c1c; color:#ffffff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px;">
+                        TIER-3 CFO & LEGAL COUNSEL ESCALATION
+                    </span>
+                    <span style="color:#b91c1c; font-weight:800; font-size:12px;">CRITICAL SEVERITY</span>
+                </div>
+                <h4 style="margin:4px 0 8px 0; color:#7f1d1d;">Pre-Litigation Recovery Docket Dispatched</h4>
+                <div style="font-size:12px; color:#334155; line-height:1.6;">
+                    <strong>Target Debtor:</strong> {d_buyer} • <strong>Delinquency:</strong> {d_days} Days Past Due<br>
+                    <strong>Default Claim Amount:</strong> <strong style="color:#991b1b; font-size:14px;">₹{d_amt:,.2f}</strong> + 18% Interest Liability<br>
+                    <strong>Escalation Docket ID:</strong> <code>DOC-LEGAL-{d_id.replace('-', '')[-6:]}</code>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("##### ⚖️ Escalation Actions & Legal Timeline:")
+            st.markdown(f"""
+            * **Step 1: Formal Demand Letter** dispatched to `{inv_data.get('contact_email')}` and Chief Financial Officer.
+            * **Step 2: Section 138 / Commercial Courts Act** pre-litigation filing drafted.
+            * **Step 3: Commercial Credit Bureau Reporting** (CIBIL Commercial / Experian B2B default flag queued for T+7 days).
+            * **Step 4: Enterprise Credit Freeze** placed on future API / SaaS service provisioning.
+            """)
+            
+            col_d1, col_d2 = st.columns([1, 1])
+            with col_d1:
+                if st.button("⚠️ Authorize Outside Legal Counsel", key=f"dlg_btn_auth_cfo_{d_id}", use_container_width=True):
+                    st.toast("Legal docket forwarded to corporate retainer counsel.", icon="⚖️")
+            with col_d2:
+                if st.button("✕ Close Escalation", key=f"dlg_btn_close_cfo_{d_id}", use_container_width=True):
+                    st.rerun()
+        
         st.markdown(f"#### 💼 Enterprise Dossier: `{inv_id}`")
+        
+        amt_display_html = (
+            f'<span style="text-decoration:line-through; font-size:12px; color:#cbd5e1; margin-right:6px;">₹{orig_amount:,.2f}</span><span style="color:#86efac; font-weight:800;">₹{effective_amount:,.2f}</span> <span style="background:#166534; color:#dcfce7; font-size:9px; font-weight:800; padding:2px 6px; border-radius:4px;">-2% DISC</span>'
+            if is_discounted else f"₹{orig_amount:,.2f}"
+        )
         
         render_html(f"""
         <div class="terminal-container" style="background:#ffffff; border:1.5px solid #cbd5e1; box-shadow:0 6px 18px rgba(0,0,0,0.04);">
@@ -1641,7 +1835,7 @@ with track_tab_b2b:
                     <span style="background:{'#065f46' if is_paid else '#b91c1c'}; color:#ffffff; font-size:10px; font-weight:800; padding:4px 8px; border-radius:9999px;">
                         {'SETTLED' if is_paid else f'{days} DAYS OVERDUE'}
                     </span>
-                    <div class="terminal-amt" style="color:#ffffff;">₹{active_inv['amount']:,.2f}</div>
+                    <div class="terminal-amt" style="color:#ffffff;">{amt_display_html}</div>
                 </div>
             </div>
 
@@ -1650,6 +1844,7 @@ with track_tab_b2b:
                     <div><strong>Items / Contract:</strong> {active_inv.get('items_description', 'Enterprise Software Licenses')}</div>
                     <div><strong>Due Date:</strong> {active_inv.get('due_date')} (Net-30 Terms)</div>
                     <div><strong>Finance Contact:</strong> {active_inv.get('contact_person')} ({active_inv.get('contact_email')})</div>
+                    <div><strong>Net Amount Payable:</strong> <strong style="{'color:#166534;' if is_discounted else 'color:#0c2340;'}">₹{effective_amount:,.2f}</strong> {'<span style="color:#16a34a; font-weight:700;">(2% Cash Discount Active)</span>' if is_discounted else ''}</div>
                     <div><strong>Statutory GST ITC:</strong> <span style="color:#991b1b; font-weight:700;">₹{gst_itc:,.2f} (18% Component)</span></div>
                 </div>
                 
@@ -1671,21 +1866,22 @@ with track_tab_b2b:
                 res = execute_b2b_chase_action(inv_id, "send_gst_warning")
                 st.session_state.b2b_action_feedback = res
                 st.toast("⚖️ Formal GST Section 16(2) Notice Dispatched!", icon="📋")
-                st.rerun()
+                show_gst_warning_dialog(active_inv, res)
                 
         with b2b_act_col2:
             if st.button("💰 Offer 2% Discount", key=f"disc_{inv_id}", use_container_width=True, help="Offer 2% prompt settlement cash discount if paid within 48 hours"):
+                st.session_state[f"b2b_discount_{inv_id}"] = True
                 res = execute_b2b_chase_action(inv_id, "apply_cash_discount")
                 st.session_state.b2b_action_feedback = res
-                st.toast("💰 2% Net-30 Cash Discount Applied!", icon="⚡")
-                st.rerun()
+                st.toast("💰 2% Net-30 Cash Discount Applied & Price Updated!", icon="⚡")
+                show_discount_dialog(active_inv, res)
                 
         with b2b_act_col3:
             if st.button("📄 Generate SOA", key=f"soa_{inv_id}", use_container_width=True, help="Generate comprehensive Statement of Account with open ledgers"):
                 res = execute_b2b_chase_action(inv_id, "send_soa")
                 st.session_state.b2b_action_feedback = res
                 st.toast("📄 Statement of Account (SOA) Generated!", icon="📄")
-                st.rerun()
+                show_soa_dialog(active_inv, res)
                 
         b2b_sec_col1, b2b_sec_col2 = st.columns(2)
         with b2b_sec_col1:
@@ -1693,7 +1889,7 @@ with track_tab_b2b:
                 res = execute_b2b_chase_action(inv_id, "escalate_legal")
                 st.session_state.b2b_action_feedback = res
                 st.toast("🚨 Escalation dispatched to CFO & Legal counsel!", icon="⚖️")
-                st.rerun()
+                show_cfo_legal_dialog(active_inv, res)
         with b2b_sec_col2:
             if not is_paid:
                 if st.button("✓ Reconcile & Mark Paid", key=f"pay_{inv_id}", use_container_width=True):
@@ -1704,27 +1900,6 @@ with track_tab_b2b:
                     st.rerun()
             else:
                 st.success("✓ Invoice Settled & Reconciled with ERP")
-                
-        if st.session_state.b2b_action_feedback:
-            feedback = st.session_state.b2b_action_feedback
-            if feedback.get("action") == "send_gst_warning":
-                st.markdown("###### 📜 Dispatched GST Section 16(2) Compliance Notice:")
-                st.code(feedback.get("notice_text", ""), language="markdown")
-            elif feedback.get("action") == "apply_cash_discount":
-                st.markdown("###### 💰 Prompt Settlement Terms:")
-                render_html(f"""
-                <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:8px; padding:12px; font-size:12px; color:#0369a1;">
-                    <strong>Original Amount:</strong> ₹{feedback.get('original_amount'):,.2f}<br>
-                    <strong>Prompt Settlement Discount (2%):</strong> -₹{feedback.get('discount_savings'):,.2f}<br>
-                    <strong>Net Payable Today:</strong> <strong style="color:#0c2340; font-size:14px;">₹{feedback.get('discounted_amount'):,.2f}</strong><br>
-                    <strong>Payment Link:</strong> <code>{feedback.get('payment_link')}</code>
-                </div>
-                """)
-            elif feedback.get("action") == "send_soa":
-                st.markdown("###### 📄 Statement of Account (SOA):")
-                st.code(feedback.get("statement_of_account", ""), language="markdown")
-            elif feedback.get("action") == "escalate_legal":
-                st.warning(f"🚨 {feedback.get('message')}")
 
 with track_tab_chat:
     st.markdown("### 💬 Hinglish Conversational AI Recovery Bot & Voice Simulator")
