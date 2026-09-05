@@ -1,0 +1,2717 @@
+[
+  {
+    "transaction_id": "pay_synth_0001",
+    "customer_id": "cust_synth_949",
+    "pattern_type": "price_hesitation",
+    "amount": 7809.68,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T04:19:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:19:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T04:19:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T04:31:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652654"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: Kotak Mahindra Bank UPI (user_1@kotakbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T04:31:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 4733) via Google Pay",
+      "vpa": "user_1@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0002",
+    "customer_id": "cust_synth_489",
+    "pattern_type": "payment_link_expired",
+    "amount": 7572.35,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T07:18:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:18:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T07:18:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T07:33:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653803"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for ICICI Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T07:33:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 5374) via Paytm",
+      "vpa": "user_2@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0003",
+    "customer_id": "cust_synth_646",
+    "pattern_type": "successful",
+    "amount": 3662.32,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:35:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:35:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:35:20Z",
+        "details": "Customer authorized payment via Kotak Mahindra Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T07:35:48Z",
+        "details": "Payment captured successfully via Kotak Mahindra Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987654456"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 4752) via Paytm",
+      "vpa": "user_3@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0004",
+    "customer_id": "cust_synth_680",
+    "pattern_type": "payment_failed",
+    "amount": 4692.39,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T06:59:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:59:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T06:59:20Z",
+        "details": "Attempting payment via Axis Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 3287)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T07:01:27Z",
+        "error_code": "AUTHENTICATION_FAILED",
+        "error_description": "3D Secure auth failed: incorrect OTP entered",
+        "failed_instrument": "Axis Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 3287)",
+        "details": "Payment failed: 3D Secure auth failed: incorrect OTP entered"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656930"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Axis Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 3287)",
+      "error_code": "AUTHENTICATION_FAILED",
+      "error_description": "3D Secure auth failed: incorrect OTP entered",
+      "failure_timestamp": "2026-09-04T07:01:27Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 5040) via Paytm",
+      "vpa": "user_4@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0005",
+    "customer_id": "cust_synth_324",
+    "pattern_type": "payment_link_expired",
+    "amount": 1180.82,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T08:30:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:30:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T08:30:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T08:45:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658668"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for HDFC Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T08:45:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 7916) via PhonePe",
+      "vpa": "user_5@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0006",
+    "customer_id": "cust_synth_641",
+    "pattern_type": "payment_link_expired",
+    "amount": 7801.71,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T07:32:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:32:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T07:32:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T07:47:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653591"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for HDFC Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T07:47:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 5371) via Google Pay",
+      "vpa": "user_6@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0007",
+    "customer_id": "cust_synth_564",
+    "pattern_type": "successful",
+    "amount": 7931.34,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T09:39:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:39:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T09:39:20Z",
+        "details": "Customer authorized payment via State Bank of India netbanking"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T09:40:05Z",
+        "details": "Payment captured successfully via State Bank of India"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653504"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 2743) via PhonePe",
+      "vpa": "user_7@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0008",
+    "customer_id": "cust_synth_482",
+    "pattern_type": "successful",
+    "amount": 7095.19,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:18:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:18:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:18:20Z",
+        "details": "Customer authorized payment via Kotak Mahindra Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T08:19:19Z",
+        "details": "Payment captured successfully via Kotak Mahindra Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987654923"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 1319) via Paytm",
+      "vpa": "user_8@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0009",
+    "customer_id": "cust_synth_159",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 8542.77,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:37:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:37:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T07:37:40Z",
+        "details": "Customer reached HDFC Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T07:45:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653705"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "HDFC Bank RuPay Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2133)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at HDFC Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T07:45:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 9727) via BHIM",
+      "vpa": "user_9@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0010",
+    "customer_id": "cust_synth_371",
+    "pattern_type": "payment_link_expired",
+    "amount": 4037.99,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T05:10:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:10:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T05:10:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T05:25:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659479"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for ICICI Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T05:25:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 7537) via PhonePe",
+      "vpa": "user_10@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0011",
+    "customer_id": "cust_synth_562",
+    "pattern_type": "payment_failed",
+    "amount": 949.62,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:39:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:39:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:39:20Z",
+        "details": "Attempting payment via HDFC Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4608)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T08:39:53Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "HDFC Bank declined transaction (Authorization failed)",
+        "failed_instrument": "HDFC Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4608)",
+        "details": "Payment failed: HDFC Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656413"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "HDFC Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4608)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "HDFC Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T08:39:53Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 1117) via PhonePe",
+      "vpa": "user_11@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0012",
+    "customer_id": "cust_synth_172",
+    "pattern_type": "price_hesitation",
+    "amount": 6152.21,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T05:17:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:17:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T05:17:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T05:29:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652588"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: ICICI Bank UPI (user_12@icicibank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T05:29:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 4981) via PhonePe",
+      "vpa": "user_12@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0013",
+    "customer_id": "cust_synth_774",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 3934.48,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T06:00:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:00:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T06:00:40Z",
+        "details": "Customer reached HDFC Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T06:08:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655073"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "HDFC Bank RuPay Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 1993)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at HDFC Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T06:08:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 7596) via Google Pay",
+      "vpa": "user_13@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0014",
+    "customer_id": "cust_synth_296",
+    "pattern_type": "successful",
+    "amount": 1604.57,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T08:03:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:03:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:03:20Z",
+        "details": "Customer authorized payment via ICICI Bank upi"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T08:03:52Z",
+        "details": "Payment captured successfully via ICICI Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987651828"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 2235) via BHIM",
+      "vpa": "user_14@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0015",
+    "customer_id": "cust_synth_767",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 8732.37,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T05:04:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:04:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T05:04:40Z",
+        "details": "Customer reached ICICI Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T05:12:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653697"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "ICICI Bank Visa Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 8956)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at ICICI Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T05:12:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 8886) via BHIM",
+      "vpa": "user_15@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0016",
+    "customer_id": "cust_synth_488",
+    "pattern_type": "successful",
+    "amount": 2679.75,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T09:39:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:39:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T09:39:20Z",
+        "details": "Customer authorized payment via Axis Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T09:40:49Z",
+        "details": "Payment captured successfully via Axis Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987651998"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 3536) via BHIM",
+      "vpa": "user_16@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0017",
+    "customer_id": "cust_synth_865",
+    "pattern_type": "payment_failed",
+    "amount": 26772.8,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:00:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:00:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:00:20Z",
+        "details": "Attempting payment via Kotak Mahindra Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 1931)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T07:01:45Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "Kotak Mahindra Bank declined transaction (Authorization failed)",
+        "failed_instrument": "Kotak Mahindra Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 1931)",
+        "details": "Payment failed: Kotak Mahindra Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657615"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Kotak Mahindra Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 1931)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "Kotak Mahindra Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T07:01:45Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 9320) via PhonePe",
+      "vpa": "user_17@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0018",
+    "customer_id": "cust_synth_222",
+    "pattern_type": "payment_link_expired",
+    "amount": 5511.86,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T04:49:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:49:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T04:49:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T05:04:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987654910"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Kotak Mahindra Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T05:04:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 6183) via BHIM",
+      "vpa": "user_18@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0019",
+    "customer_id": "cust_synth_371",
+    "pattern_type": "successful",
+    "amount": 28428.52,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T06:18:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:18:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T06:18:20Z",
+        "details": "Customer authorized payment via Axis Bank netbanking"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T06:18:49Z",
+        "details": "Payment captured successfully via Axis Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659808"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 8508) via Google Pay",
+      "vpa": "user_19@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0020",
+    "customer_id": "cust_synth_318",
+    "pattern_type": "payment_failed",
+    "amount": 8425.03,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T05:21:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:21:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T05:21:20Z",
+        "details": "Attempting payment via HDFC Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5669)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T05:23:01Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "HDFC Bank declined transaction (Authorization failed)",
+        "failed_instrument": "HDFC Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5669)",
+        "details": "Payment failed: HDFC Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652697"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "HDFC Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5669)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "HDFC Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T05:23:01Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 3584) via Paytm",
+      "vpa": "user_20@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0021",
+    "customer_id": "cust_synth_999",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 8050.53,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T08:32:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:32:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T08:32:40Z",
+        "details": "Customer reached Kotak Mahindra Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T08:40:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655325"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "Kotak Mahindra Bank Visa Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5616)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at Kotak Mahindra Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T08:40:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 4450) via Paytm",
+      "vpa": "user_21@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0022",
+    "customer_id": "cust_synth_617",
+    "pattern_type": "payment_failed",
+    "amount": 8209.17,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T05:30:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:30:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T05:30:20Z",
+        "details": "Attempting payment via HDFC Bank Account via user_22@hdfcbank"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T05:31:26Z",
+        "error_code": "INSUFFICIENT_FUNDS",
+        "error_description": "HDFC Bank account balance insufficient for mandate debit",
+        "failed_instrument": "HDFC Bank Account via user_22@hdfcbank",
+        "details": "Payment failed: HDFC Bank account balance insufficient for mandate debit"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658239"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "upi",
+      "instrument_name": "HDFC Bank Account via user_22@hdfcbank",
+      "error_code": "INSUFFICIENT_FUNDS",
+      "error_description": "HDFC Bank account balance insufficient for mandate debit",
+      "failure_timestamp": "2026-09-04T05:31:26Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 1722) via BHIM",
+      "vpa": "user_22@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0023",
+    "customer_id": "cust_synth_664",
+    "pattern_type": "successful",
+    "amount": 1361.12,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T06:02:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:02:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T06:02:20Z",
+        "details": "Customer authorized payment via ICICI Bank upi"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T06:02:45Z",
+        "details": "Payment captured successfully via ICICI Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656862"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 3426) via Google Pay",
+      "vpa": "user_23@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0024",
+    "customer_id": "cust_synth_315",
+    "pattern_type": "payment_link_expired",
+    "amount": 3440.64,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:33:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:33:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T07:33:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T07:48:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656442"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": true,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Kotak Mahindra Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T07:48:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 3662) via PhonePe",
+      "vpa": "user_24@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0025",
+    "customer_id": "cust_synth_901",
+    "pattern_type": "price_hesitation",
+    "amount": 7829.95,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T06:10:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:10:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T06:10:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T06:22:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658541"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: ICICI Bank UPI (user_25@icicibank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T06:22:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 7267) via PhonePe",
+      "vpa": "user_25@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0026",
+    "customer_id": "cust_synth_458",
+    "pattern_type": "payment_link_expired",
+    "amount": 7892.38,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T07:04:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:04:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T07:04:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T07:19:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655573"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for ICICI Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T07:19:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 6378) via PhonePe",
+      "vpa": "user_26@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0027",
+    "customer_id": "cust_synth_459",
+    "pattern_type": "payment_failed",
+    "amount": 6242.86,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T04:12:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:12:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:12:20Z",
+        "details": "Attempting payment via Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2889)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T04:13:12Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "Kotak Mahindra Bank declined transaction (Authorization failed)",
+        "failed_instrument": "Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2889)",
+        "details": "Payment failed: Kotak Mahindra Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658119"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2889)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "Kotak Mahindra Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T04:13:12Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 5279) via Google Pay",
+      "vpa": "user_27@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0028",
+    "customer_id": "cust_synth_453",
+    "pattern_type": "price_hesitation",
+    "amount": 8863.43,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T07:00:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:00:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T07:00:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T07:12:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659821"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: HDFC Bank UPI (user_28@hdfcbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T07:12:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 1727) via PhonePe",
+      "vpa": "user_28@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0029",
+    "customer_id": "cust_synth_803",
+    "pattern_type": "payment_link_expired",
+    "amount": 1000.77,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T08:00:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:00:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T08:00:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T08:15:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657592"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for State Bank of India Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T08:15:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 5920) via Paytm",
+      "vpa": "user_29@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0030",
+    "customer_id": "cust_synth_813",
+    "pattern_type": "successful",
+    "amount": 2048.82,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T07:09:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:09:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:09:20Z",
+        "details": "Customer authorized payment via Axis Bank netbanking"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T07:10:06Z",
+        "details": "Payment captured successfully via Axis Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658043"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 7653) via PhonePe",
+      "vpa": "user_30@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0031",
+    "customer_id": "cust_synth_904",
+    "pattern_type": "payment_link_expired",
+    "amount": 3170.34,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T04:44:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:44:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T04:44:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T04:59:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659445"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Axis Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T04:59:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 8752) via PhonePe",
+      "vpa": "user_31@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0032",
+    "customer_id": "cust_synth_779",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 1202.13,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T04:16:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:16:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T04:16:40Z",
+        "details": "Customer reached ICICI Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T04:24:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658784"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "ICICI Bank RuPay Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4680)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at ICICI Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T04:24:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 4262) via Paytm",
+      "vpa": "user_32@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0033",
+    "customer_id": "cust_synth_725",
+    "pattern_type": "price_hesitation",
+    "amount": 8019.78,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T09:03:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:03:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T09:03:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T09:15:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652746"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: Kotak Mahindra Bank UPI (user_33@kotakbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T09:15:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 7547) via BHIM",
+      "vpa": "user_33@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0034",
+    "customer_id": "cust_synth_897",
+    "pattern_type": "payment_link_expired",
+    "amount": 7314.34,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T06:03:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:03:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T06:03:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T06:18:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659702"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Kotak Mahindra Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T06:18:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 2988) via Google Pay",
+      "vpa": "user_34@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0035",
+    "customer_id": "cust_synth_672",
+    "pattern_type": "successful",
+    "amount": 6894.15,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T04:36:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:36:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:36:20Z",
+        "details": "Customer authorized payment via Axis Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T04:37:13Z",
+        "details": "Payment captured successfully via Axis Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655050"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 8305) via BHIM",
+      "vpa": "user_35@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0036",
+    "customer_id": "cust_synth_960",
+    "pattern_type": "payment_failed",
+    "amount": 7087.0,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T04:14:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:14:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:14:20Z",
+        "details": "Attempting payment via Axis Bank Account via user_36@axisbank"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T04:16:06Z",
+        "error_code": "INSUFFICIENT_FUNDS",
+        "error_description": "Axis Bank account balance insufficient for mandate debit",
+        "failed_instrument": "Axis Bank Account via user_36@axisbank",
+        "details": "Payment failed: Axis Bank account balance insufficient for mandate debit"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659849"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "upi",
+      "instrument_name": "Axis Bank Account via user_36@axisbank",
+      "error_code": "INSUFFICIENT_FUNDS",
+      "error_description": "Axis Bank account balance insufficient for mandate debit",
+      "failure_timestamp": "2026-09-04T04:16:06Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 8206) via PhonePe",
+      "vpa": "user_36@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0037",
+    "customer_id": "cust_synth_182",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 3693.1,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T08:30:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:30:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T08:30:40Z",
+        "details": "Customer reached ICICI Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T08:38:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652020"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "ICICI Bank RuPay Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2052)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at ICICI Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T08:38:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 7797) via PhonePe",
+      "vpa": "user_37@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0038",
+    "customer_id": "cust_synth_311",
+    "pattern_type": "price_hesitation",
+    "amount": 7019.24,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T06:05:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:05:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T06:05:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T06:17:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657865"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: HDFC Bank UPI (user_38@hdfcbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T06:17:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 1096) via BHIM",
+      "vpa": "user_38@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0039",
+    "customer_id": "cust_synth_651",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 8120.18,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T05:01:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:01:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T05:01:40Z",
+        "details": "Customer reached Axis Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T05:09:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657624"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "Axis Bank Visa Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 8140)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at Axis Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T05:09:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 8956) via Paytm",
+      "vpa": "user_39@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0040",
+    "customer_id": "cust_synth_841",
+    "pattern_type": "successful",
+    "amount": 8307.06,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:16:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:16:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:16:20Z",
+        "details": "Customer authorized payment via Kotak Mahindra Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T08:17:39Z",
+        "details": "Payment captured successfully via Kotak Mahindra Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653977"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 1444) via Google Pay",
+      "vpa": "user_40@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0041",
+    "customer_id": "cust_synth_151",
+    "pattern_type": "payment_failed",
+    "amount": 2219.28,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:27:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:27:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:27:20Z",
+        "details": "Attempting payment via State Bank of India Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5558)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T07:29:14Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "State Bank of India declined transaction (Authorization failed)",
+        "failed_instrument": "State Bank of India Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5558)",
+        "details": "Payment failed: State Bank of India declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987654673"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "State Bank of India Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5558)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "State Bank of India declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T07:29:14Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 7906) via BHIM",
+      "vpa": "user_41@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0042",
+    "customer_id": "cust_synth_765",
+    "pattern_type": "successful",
+    "amount": 6004.09,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T09:05:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:05:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T09:05:20Z",
+        "details": "Customer authorized payment via HDFC Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T09:06:07Z",
+        "details": "Payment captured successfully via HDFC Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658619"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "HDFC Bank Savings A/c (\u2022\u2022\u2022\u2022 3496) via PhonePe",
+      "vpa": "user_42@hdfcbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0043",
+    "customer_id": "cust_synth_816",
+    "pattern_type": "successful",
+    "amount": 1841.99,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:29:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:29:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:29:20Z",
+        "details": "Customer authorized payment via Kotak Mahindra Bank card"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T07:30:28Z",
+        "details": "Payment captured successfully via Kotak Mahindra Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657498"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 6096) via Google Pay",
+      "vpa": "user_43@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0044",
+    "customer_id": "cust_synth_832",
+    "pattern_type": "payment_failed",
+    "amount": 29646.59,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T07:59:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:59:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T07:59:20Z",
+        "details": "Attempting payment via ICICI Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2983)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T08:01:54Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "ICICI Bank declined transaction (Authorization failed)",
+        "failed_instrument": "ICICI Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2983)",
+        "details": "Payment failed: ICICI Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656590"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "ICICI Bank Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2983)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "ICICI Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T08:01:54Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 1672) via Paytm",
+      "vpa": "user_44@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0045",
+    "customer_id": "cust_synth_112",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 1306.63,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T06:05:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T06:05:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T06:05:40Z",
+        "details": "Customer reached State Bank of India 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T06:13:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655425"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "State Bank of India RuPay Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 3506)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at State Bank of India 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T06:13:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 8135) via BHIM",
+      "vpa": "user_45@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0046",
+    "customer_id": "cust_synth_730",
+    "pattern_type": "price_hesitation",
+    "amount": 4396.91,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T05:05:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:05:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T05:05:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T05:17:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658613"
+    },
+    "prior_reminder_count": 2,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: Kotak Mahindra Bank UPI (user_46@kotakbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T05:17:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 2419) via Paytm",
+      "vpa": "user_46@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0047",
+    "customer_id": "cust_synth_683",
+    "pattern_type": "payment_failed",
+    "amount": 3292.01,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T04:28:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:28:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:28:20Z",
+        "details": "Attempting payment via Axis Bank Account via user_47@axisbank"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T04:28:47Z",
+        "error_code": "INSUFFICIENT_FUNDS",
+        "error_description": "Axis Bank account balance insufficient for mandate debit",
+        "failed_instrument": "Axis Bank Account via user_47@axisbank",
+        "details": "Payment failed: Axis Bank account balance insufficient for mandate debit"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659464"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "upi",
+      "instrument_name": "Axis Bank Account via user_47@axisbank",
+      "error_code": "INSUFFICIENT_FUNDS",
+      "error_description": "Axis Bank account balance insufficient for mandate debit",
+      "failure_timestamp": "2026-09-04T04:28:47Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 4475) via PhonePe",
+      "vpa": "user_47@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0048",
+    "customer_id": "cust_synth_295",
+    "pattern_type": "abandoned_at_otp",
+    "amount": 3894.28,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:57:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:57:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "otp_requested",
+        "timestamp": "2026-09-04T08:57:40Z",
+        "details": "Customer reached Kotak Mahindra Bank 3DS OTP verification screen"
+      },
+      {
+        "status": "abandoned_at_otp",
+        "timestamp": "2026-09-04T09:05:40Z",
+        "details": "No OTP entered; customer closed checkout tab"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987654986"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card_3ds",
+      "instrument_name": "Kotak Mahindra Bank Visa Debit Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 9041)",
+      "error_code": "OTP_DELIVERY_FRICTION",
+      "error_description": "Customer waited at Kotak Mahindra Bank 3DS OTP verification screen; SMS delayed or window closed",
+      "failure_timestamp": "2026-09-04T09:05:40Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 8342) via BHIM",
+      "vpa": "user_48@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0049",
+    "customer_id": "cust_synth_413",
+    "pattern_type": "successful",
+    "amount": 4469.04,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T04:01:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:01:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:01:20Z",
+        "details": "Customer authorized payment via Kotak Mahindra Bank netbanking"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T04:02:09Z",
+        "details": "Payment captured successfully via Kotak Mahindra Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652976"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 6764) via BHIM",
+      "vpa": "user_49@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0050",
+    "customer_id": "cust_synth_838",
+    "pattern_type": "price_hesitation",
+    "amount": 6787.78,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T08:02:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:02:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T08:02:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T08:14:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655636"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: ICICI Bank UPI (user_50@icicibank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T08:14:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "ICICI Bank Savings A/c (\u2022\u2022\u2022\u2022 5530) via PhonePe",
+      "vpa": "user_50@icicibank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0051",
+    "customer_id": "cust_synth_202",
+    "pattern_type": "payment_failed",
+    "amount": 3502.58,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:01:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:01:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:01:20Z",
+        "details": "Attempting payment via State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5494)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T08:03:50Z",
+        "error_code": "GATEWAY_TIMEOUT",
+        "error_description": "State Bank of India network timeout during 3DS card challenge",
+        "failed_instrument": "State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5494)",
+        "details": "Payment failed: State Bank of India network timeout during 3DS card challenge"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652680"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5494)",
+      "error_code": "GATEWAY_TIMEOUT",
+      "error_description": "State Bank of India network timeout during 3DS card challenge",
+      "failure_timestamp": "2026-09-04T08:03:50Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 1745) via PhonePe",
+      "vpa": "user_51@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0052",
+    "customer_id": "cust_synth_993",
+    "pattern_type": "successful",
+    "amount": 4435.81,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T09:34:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:34:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T09:34:20Z",
+        "details": "Customer authorized payment via Axis Bank upi"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T09:35:42Z",
+        "details": "Payment captured successfully via Axis Bank"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987652213"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 5136) via PhonePe",
+      "vpa": "user_52@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0053",
+    "customer_id": "cust_synth_690",
+    "pattern_type": "payment_failed",
+    "amount": 1703.85,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T04:18:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T04:18:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T04:18:20Z",
+        "details": "Attempting payment via Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5066)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T04:20:58Z",
+        "error_code": "GATEWAY_TIMEOUT",
+        "error_description": "Kotak Mahindra Bank network timeout during 3DS card challenge",
+        "failed_instrument": "Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5066)",
+        "details": "Payment failed: Kotak Mahindra Bank network timeout during 3DS card challenge"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657232"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Kotak Mahindra Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5066)",
+      "error_code": "GATEWAY_TIMEOUT",
+      "error_description": "Kotak Mahindra Bank network timeout during 3DS card challenge",
+      "failure_timestamp": "2026-09-04T04:20:58Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 2940) via Google Pay",
+      "vpa": "user_53@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0054",
+    "customer_id": "cust_synth_561",
+    "pattern_type": "payment_failed",
+    "amount": 5460.32,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T05:54:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:54:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T05:54:20Z",
+        "details": "Attempting payment via Axis Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2625)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T05:55:46Z",
+        "error_code": "GATEWAY_TIMEOUT",
+        "error_description": "Axis Bank network timeout during 3DS card challenge",
+        "failed_instrument": "Axis Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2625)",
+        "details": "Payment failed: Axis Bank network timeout during 3DS card challenge"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987653847"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Axis Bank Mastercard Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 2625)",
+      "error_code": "GATEWAY_TIMEOUT",
+      "error_description": "Axis Bank network timeout during 3DS card challenge",
+      "failure_timestamp": "2026-09-04T05:55:46Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 4404) via Google Pay",
+      "vpa": "user_54@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0055",
+    "customer_id": "cust_synth_665",
+    "pattern_type": "payment_link_expired",
+    "amount": 3912.25,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T09:02:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T09:02:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T09:02:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T09:17:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987658438"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Kotak Mahindra Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T09:17:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 4792) via Paytm",
+      "vpa": "user_55@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0056",
+    "customer_id": "cust_synth_172",
+    "pattern_type": "payment_link_expired",
+    "amount": 7174.32,
+    "currency": "INR",
+    "method": "netbanking",
+    "created_at": "2026-09-04T07:41:00Z",
+    "last_status": "expired",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T07:41:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "issued",
+        "timestamp": "2026-09-04T07:41:10Z",
+        "details": "Payment link generated with 15m validity"
+      },
+      {
+        "status": "expired",
+        "timestamp": "2026-09-04T07:56:00Z",
+        "details": "Payment link expired without customer payment"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987655352"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "checkout_session",
+      "instrument_name": "Hosted Checkout Link (Reserved for Kotak Mahindra Bank Netbanking / Card)",
+      "error_code": "LINK_EXPIRED_UNPAID",
+      "error_description": "15-minute checkout reservation expired before customer authorized payment",
+      "failure_timestamp": "2026-09-04T07:56:00Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 2880) via PhonePe",
+      "vpa": "user_56@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0057",
+    "customer_id": "cust_synth_946",
+    "pattern_type": "successful",
+    "amount": 15479.92,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T08:28:00Z",
+    "last_status": "paid",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:28:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:28:20Z",
+        "details": "Customer authorized payment via State Bank of India upi"
+      },
+      {
+        "status": "paid",
+        "timestamp": "2026-09-04T08:29:14Z",
+        "details": "Payment captured successfully via State Bank of India"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987659199"
+    },
+    "prior_reminder_count": 1,
+    "opt_out": false,
+    "failed_instrument_info": null,
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 3037) via Paytm",
+      "vpa": "user_57@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0058",
+    "customer_id": "cust_synth_652",
+    "pattern_type": "payment_failed",
+    "amount": 5542.12,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T05:28:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:28:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T05:28:20Z",
+        "details": "Attempting payment via Axis Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5102)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T05:29:53Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "Axis Bank declined transaction (Authorization failed)",
+        "failed_instrument": "Axis Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5102)",
+        "details": "Payment failed: Axis Bank declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987651659"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "Axis Bank RuPay Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 5102)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "Axis Bank declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T05:29:53Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Axis Bank Savings A/c (\u2022\u2022\u2022\u2022 1423) via Paytm",
+      "vpa": "user_58@axisbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0059",
+    "customer_id": "cust_synth_881",
+    "pattern_type": "payment_failed",
+    "amount": 6001.98,
+    "currency": "INR",
+    "method": "card",
+    "created_at": "2026-09-04T08:11:00Z",
+    "last_status": "failed",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T08:11:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "attempted",
+        "timestamp": "2026-09-04T08:11:20Z",
+        "details": "Attempting payment via State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 9056)"
+      },
+      {
+        "status": "failed",
+        "timestamp": "2026-09-04T08:12:26Z",
+        "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+        "error_description": "State Bank of India declined transaction (Authorization failed)",
+        "failed_instrument": "State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 9056)",
+        "details": "Payment failed: State Bank of India declined transaction (Authorization failed)"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987656403"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "card",
+      "instrument_name": "State Bank of India Visa Card (\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 9056)",
+      "error_code": "BAD_REQUEST_PAYMENT_DECLINED",
+      "error_description": "State Bank of India declined transaction (Authorization failed)",
+      "failure_timestamp": "2026-09-04T08:12:26Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "State Bank of India Savings A/c (\u2022\u2022\u2022\u2022 2494) via BHIM",
+      "vpa": "user_59@statebank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  },
+  {
+    "transaction_id": "pay_synth_0060",
+    "customer_id": "cust_synth_521",
+    "pattern_type": "price_hesitation",
+    "amount": 8527.66,
+    "currency": "INR",
+    "method": "upi",
+    "created_at": "2026-09-04T05:27:00Z",
+    "last_status": "attempted",
+    "status_history": [
+      {
+        "status": "created",
+        "timestamp": "2026-09-04T05:27:00Z",
+        "details": "Checkout initiated by customer"
+      },
+      {
+        "status": "viewed_payment_options",
+        "timestamp": "2026-09-04T05:27:30Z",
+        "details": "Customer viewed payment method screen with total price"
+      },
+      {
+        "status": "idle_abandonment",
+        "timestamp": "2026-09-04T05:39:30Z",
+        "details": "Cart left idle for >10 minutes without interaction or retry"
+      }
+    ],
+    "customer_contact": {
+      "email": "use***@example.com",
+      "phone": "+91-987657622"
+    },
+    "prior_reminder_count": 0,
+    "opt_out": false,
+    "failed_instrument_info": {
+      "type": "cart_hesitation",
+      "instrument_name": "Selected Payment Rail: Kotak Mahindra Bank UPI (user_60@kotakbank)",
+      "error_code": "IDLE_PRICE_HESITATION",
+      "error_description": "Cart left idle on payment method review screen for >10 minutes",
+      "failure_timestamp": "2026-09-04T05:39:30Z"
+    },
+    "recommended_instrument_info": {
+      "method": "UPI",
+      "instrument": "Kotak Mahindra Bank Savings A/c (\u2022\u2022\u2022\u2022 6153) via BHIM",
+      "vpa": "user_60@kotakbank",
+      "routing_reason": "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)"
+    }
+  }
+]

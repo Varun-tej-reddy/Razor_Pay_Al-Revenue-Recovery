@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  revenue-recovery-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: revenue_recovery_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - DATABASE_URL=sqlite:////app/data/recovery_audit.db
+    volumes:
+      - recovery_data:/app/data
+    restart: unless-stopped
+
+  # Production-Readiness Note:
+  # To switch from SQLite to PostgreSQL in production, simply uncomment this service
+  # and change DATABASE_URL to: postgresql://postgres:postgres@db:5432/revenue_recovery
+  #
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: revenue_recovery
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgrespassword
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+volumes:
+  recovery_data:
+  # pg_data:

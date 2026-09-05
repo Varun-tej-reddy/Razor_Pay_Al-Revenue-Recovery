@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: razorrevive-recovery-agent
+    env: python
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        value: rzp_test_placeholder_key
+      - key: RAZORPAY_KEY_SECRET
+        value: rzp_test_placeholder_secret
+      - key: DATABASE_URL
+        value: sqlite:///recovery_audit.db
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: "true"

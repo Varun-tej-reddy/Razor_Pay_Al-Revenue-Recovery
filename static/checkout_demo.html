@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Checkout Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+        /* WCAG AA Base Typography & Clean Enterprise Background (SC 1.4.3) */
+        body {
+            background-color: #f8fafc;
+            background-image: linear-gradient(180deg, #f0f7ff 0%, #f8fafc 240px);
+            color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* WCAG AA Visible Focus Ring (SC 2.4.7) */
+        *:focus-visible,
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #0052cc !important;
+            outline-offset: 2px !important;
+        }
+
+        /* WCAG AA Reduced Motion Support (SC 2.2.2) */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .checkout-container {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Top Razorpay Header */
+        .header {
+            background: linear-gradient(135deg, #0c2340 0%, #173660 100%);
+            color: #ffffff;
+            padding: 24px;
+            position: relative;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .rzp-logo {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rzp-logo span { color: #7dd3fc; }
+        .badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-paid {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1.5px solid #6ee7b7;
+        }
+        .badge-action {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1.5px solid #fca5a5;
+        }
+        .amount-tag {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .sub {
+            font-size: 13px;
+            color: #e2e8f0;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Bento cards */
+        .bento-fail {
+            background: #fff1f2;
+            border: 1.5px solid #fca5a5;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 18px 24px 0;
+        }
+        .bento-pass {
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 14px 24px 0;
+        }
+        .bento-nudge {
+            background: #eff6ff;
+            border: 1.5px solid #7dd3fc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 14px 24px 0;
+            font-size: 12px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        .body-section { padding: 20px 24px 24px; }
+        .section-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+        .inst-title { font-size: 15px; font-weight: 800; color: #0f172a; }
+        .inst-sub { font-size: 12px; color: #334155; margin-top: 2px; line-height: 1.5; }
+        .inst-sub code {
+            background: #e0f2fe;
+            color: #075985;
+            border: 1px solid #7dd3fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* QR Box */
+        .qr-card {
+            text-align: center;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            margin-top: 14px;
+        }
+        .qr-placeholder {
+            width: 120px;
+            height: 120px;
+            background: #0c2340;
+            margin: 0 auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        /* Pay Button */
+        .pay-btn {
+            width: 100%;
+            background: #0052cc;
+            color: #ffffff;
+            border: 2px solid #0052cc;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 4px 14px rgba(0, 82, 204, 0.3);
+            transition: all 0.2s ease;
+        }
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 82, 204, 0.4);
+            background: #0040a8;
+            border-color: #0040a8;
+        }
+
+        /* Secondary Action Buttons */
+        .action-btn {
+            width: 100%;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Green Settled Receipt Specific Layout */
+        .settled-receipt-box {
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 16px;
+            padding: 22px;
+            text-align: center;
+            margin: 20px 24px;
+        }
+        .settled-check-circle {
+            width: 64px;
+            height: 64px;
+            background: #065f46;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            box-shadow: 0 6px 16px rgba(6, 95, 70, 0.25);
+        }
+        .settled-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #065f46;
+            margin-bottom: 4px;
+        }
+        .settled-subtitle {
+            font-size: 13px;
+            color: #065f46;
+            font-weight: 600;
+        }
+        .settled-pill {
+            display: inline-block;
+            margin-top: 10px;
+            background: #d1fae5;
+            color: #065f46;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            border: 1.5px solid #6ee7b7;
+        }
+
+        /* Lineage Table */
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 8px;
+            text-align: left;
+        }
+        .receipt-table td, .receipt-table th {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .receipt-label {
+            color: #334155;
+            font-weight: 700;
+            width: 42%;
+            text-align: left;
+        }
+        .receipt-val {
+            color: #0f172a;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .footer-sec {
+            text-align: center;
+            padding: 14px 20px;
+            border-top: 1.5px solid #e2e8f0;
+            font-size: 12px;
+            color: #334155;
+            font-weight: 600;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+    <main class="checkout-container" role="main">
+        <!-- Razorpay Header -->
+        <header class="header" role="banner">
+            <div class="brand">
+                <div class="rzp-logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12.02 0L2 14.88h7.94L7.54 24l12.44-12.82h-7.96L14.46 0h-2.44z" fill="#7dd3fc"/>
+                    </svg>
+                    Razorpay <span>Checkout</span>
+                </div>
+                <div id="disp-badge" class="badge badge-action" role="status">⚠️ ACTION REQUIRED</div>
+            </div>
+            <div class="amount-tag" id="disp-amount">₹3,743.17</div>
+            <div class="sub" id="disp-sub">Order ID: <strong style="color:#ffffff;">pay_demo_001</strong> • Customer: <strong style="color:#ffffff;">cust_379</strong></div>
+        </header>
+
+        <!-- 1. Green Settled Receipt View -->
+        <div id="settled-view" style="display: none;" role="region" aria-label="Settled Payment Receipt">
+            <div class="settled-receipt-box">
+                <div class="settled-check-circle" aria-hidden="true">✓</div>
+                <div class="settled-title">Payment Captured & Settled!</div>
+                <div class="settled-subtitle" id="disp-settled-subtitle">
+                    ₹3,743.17 received via <strong>Kotak Mahindra Bank UPI</strong>
+                </div>
+                <div class="settled-pill">✓ Escrow Settled • Zero Risk (Test Mode)</div>
+            </div>
+
+            <div class="body-section" style="padding-top: 0;">
+                <div class="section-title">Settled Payment Telemetry</div>
+                
+                <table class="receipt-table" aria-label="Settled Payment Telemetry Details">
+                    <tr>
+                        <th scope="row" class="receipt-label">Payment ID</th>
+                        <td class="receipt-val"><span id="disp-pay-id" style="font-family:'JetBrains Mono',monospace; color:#0369a1; font-weight:700;">pay_settled_test</span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="receipt-label">Settlement Reference</th>
+                        <td class="receipt-val"><span id="disp-rrn" style="font-family:'JetBrains Mono',monospace;">RRN-904615</span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="receipt-label">Debited Instrument</th>
+                        <td class="receipt-val" id="disp-settled-inst">🟢 Kotak Mahindra Bank Savings A/c via BHIM</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="receipt-label">UPI VPA Handle</th>
+                        <td class="receipt-val"><code id="disp-settled-vpa">user@kotakbank</code></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="receipt-label">Authorization Rail</th>
+                        <td class="receipt-val">1-Click Biometric UPI (Instant)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="receipt-label">Resolved Friction</th>
+                        <td class="receipt-val" id="disp-settled-friction" style="color:#065f46; font-weight:800;">Bypassed failing card rail</td>
+                    </tr>
+                </table>
+
+                <div style="margin-top: 20px;">
+                    <button class="action-btn" onclick="window.print()" style="background:#0052cc; color:#ffffff; border:2px solid #0052cc; box-shadow:0 4px 12px rgba(0,82,204,0.3);" aria-label="Print tax invoice">
+                        🖨️ Print / Download Tax Invoice
+                    </button>
+                    <button class="action-btn" onclick="window.close()" style="background:#f8fafc; color:#334155; border:1.5px solid #cbd5e1; margin-top:8px;" aria-label="Close window">
+                        ✕ Close Window
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Red Action Required Checkout View -->
+        <div id="checkout-view" role="region" aria-label="Payment Recovery Authorization">
+            <div class="bento-fail" role="region" aria-label="Failed Customer Attempt">
+                <div style="font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">
+                    <span aria-hidden="true">❌</span> Failed Customer Attempt
+                </div>
+                <div class="inst-title" id="disp-failed-inst" style="color: #7f1d1d;">HDFC Bank Visa Card (•••• 4242)</div>
+                <div class="inst-sub" id="disp-fail-reason" style="color: #450a0a; margin-top: 4px;">
+                    <strong>Friction:</strong> Card declined by issuing bank (3DS Authorization Timeout)
+                </div>
+            </div>
+
+            <div class="bento-nudge" role="note">
+                <span aria-hidden="true">⚡</span> <strong>AI Recovery Routing:</strong> Automatically switched to instant 1-Click Biometric UPI Rail to bypass card network degradation.
+            </div>
+
+            <div class="bento-pass" role="region" aria-label="Pre-Configured Replacement Method">
+                <div style="font-size: 11px; font-weight: 800; color: #065f46; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">
+                    <span aria-hidden="true">⚡</span> Pre-Configured Replacement Method
+                </div>
+                <div class="inst-title" id="disp-paying-inst">Kotak Mahindra Bank Savings A/c (•••• 6153) via BHIM</div>
+                <div class="inst-sub">
+                    UPI VPA: <code id="disp-vpa">user_60@kotakbank</code> • Instant 1-click authorization without OTP delay
+                </div>
+            </div>
+
+            <div class="body-section">
+                <div class="qr-card">
+                    <div class="qr-placeholder" role="img" aria-label="UPI Payment QR Code">SCAN WITH UPI</div>
+                    <div style="font-size: 12px; color: #334155; margin-top: 8px; font-weight: 600;">
+                        Scan with Google Pay, PhonePe, Paytm, BHIM, or tap Pay below
+                    </div>
+                </div>
+
+                <button class="pay-btn" id="payButton" onclick="authorizePayment()" aria-label="Authorize Payment via UPI">
+                    💳 Authorize Payment via UPI
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer-sec" role="contentinfo">
+            🔒 Secured with 256-bit Bank-Grade Encryption by Razorpay (Test Mode)
+        </footer>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const txn = params.get('txn') || 'pay_demo_001';
+        const amount = parseFloat(params.get('amount') || '3743.17');
+        const cust = params.get('cust') || 'customer';
+        const failedInst = params.get('failed_inst') || 'HDFC Bank Visa Card (•••• 4242)';
+        const failReason = params.get('fail_reason') || '3DS Authorization Timeout';
+        const payingInst = params.get('paying_inst') || 'Kotak Mahindra Bank Savings A/c via BHIM';
+        const vpa = params.get('vpa') || 'user@kotakbank';
+        const isRecovered = params.get('recovered') === '1';
+
+        // Populate fields
+        document.getElementById('disp-amount').innerText = '₹' + amount.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        document.getElementById('disp-sub').innerHTML = `Order ID: <strong style="color:#ffffff;">${txn}</strong> • Customer: <strong style="color:#ffffff;">${cust}</strong>`;
+        document.getElementById('disp-failed-inst').innerText = failedInst;
+        document.getElementById('disp-fail-reason').innerHTML = `<strong>Friction:</strong> ${failReason}`;
+        document.getElementById('disp-paying-inst').innerText = payingInst;
+        document.getElementById('disp-vpa').innerText = vpa;
+        document.getElementById('payButton').innerText = `💳 Pay ₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})} via ${vpa}`;
+        document.getElementById('payButton').setAttribute('aria-label', `Authorize payment of ₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})} via ${vpa}`);
+
+        // Settled elements
+        document.getElementById('disp-settled-subtitle').innerHTML = `₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})} received via <strong>${payingInst}</strong>`;
+        document.getElementById('disp-pay-id').innerText = `pay_settled_${txn.slice(-8)}`;
+        document.getElementById('disp-rrn').innerText = `RRN-${txn.slice(-6)}`;
+        document.getElementById('disp-settled-inst').innerText = `🟢 ${payingInst}`;
+        document.getElementById('disp-settled-vpa').innerText = vpa;
+        document.getElementById('disp-settled-friction').innerText = `Bypassed ${failedInst}`;
+
+        if (isRecovered) {
+            document.getElementById('disp-badge').className = 'badge badge-paid';
+            document.getElementById('disp-badge').innerText = '● PAID & SETTLED';
+            document.getElementById('checkout-view').style.display = 'none';
+            document.getElementById('settled-view').style.display = 'block';
+        } else {
+            document.getElementById('disp-badge').className = 'badge badge-action';
+            document.getElementById('disp-badge').innerText = '⚠️ ACTION REQUIRED';
+            document.getElementById('checkout-view').style.display = 'block';
+            document.getElementById('settled-view').style.display = 'none';
+        }
+
+        function authorizePayment() {
+            const btn = document.getElementById('payButton');
+            btn.innerHTML = 'Debiting Account & Authorizing with Bank...';
+            btn.style.opacity = '0.75';
+            btn.disabled = true;
+
+            fetch(`/api/capture-payment?txn=${encodeURIComponent(txn)}&amount=${amount}`, { method: 'POST' })
+                .catch(err => console.warn(err))
+                .finally(() => {
+                    setTimeout(() => {
+                        document.getElementById('disp-badge').className = 'badge badge-paid';
+                        document.getElementById('disp-badge').innerText = '● PAID & SETTLED';
+                        document.getElementById('checkout-view').style.display = 'none';
+                        document.getElementById('settled-view').style.display = 'block';
+                    }, 600);
+                });
+        }
+    </script>
+</body>
+</html>
