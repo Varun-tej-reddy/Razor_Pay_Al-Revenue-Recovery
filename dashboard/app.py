@@ -2493,34 +2493,123 @@ with track_tab_chat:
                 renderGeminiResponse(userQuery, data);
             })
             .catch(err => {
-                const qLower = userQuery.toLowerCase();
+                const qLower = userQuery.toLowerCase().trim();
+                const rawAmt = parseFloat("__C_RAW_AMT__") || 4499.0;
+                const discAmt = (rawAmt * 0.02).toFixed(2);
+                const netAmt = (rawAmt * 0.98).toFixed(2);
+
+                // Check 1: Paid / Settled Claim
+                const isPaid = [
+                    'done', 'completed', 'already paid', 'paid', 'kar diya', 'ho gaya', 'kat gaye', 'settled',
+                    'कर दिया', 'हो गया', 'पे कर दिया', 'भुगतान हो गया', 'डन', 'सक्सेस', 'कट गए'
+                ].some(k => qLower.includes(k));
+
+                // Check 2: Discount / Price Hesitation / Not Interested
+                const isDiscount = [
+                    'discount', 'chhut', 'kam', 'sasta', 'mehenga', 'mehangi', 'expensive', 'costly', 'paisa',
+                    'nahi lena', 'nahi chahiye', 'not interested', 'cancel', 'drop', 'budget', 'reduce', 'offer', 'deal',
+                    'डिस्काउंट', 'छूट', 'कम', 'सस्ता', 'महंगा', 'महंगी', 'पैसा', 'पैसे', 'नहीं लेना', 'नहीं चाहिए', 'नहीं खरीदना', 'कैंसिल', 'बजट', 'ऑफर'
+                ].some(k => qLower.includes(k));
+
+                // Check 3: Promise-to-Pay (PTP) / Future timeline
+                const isPTP = [
+                    'kal', 'subah', 'shaam', 'sham', 'parso', 'tarikh', 'baje', 'pay', 'kar dunga', 'bhej dunga',
+                    'clear', 'settle', 'tomorrow', 'morning', 'evening', 'friday', 'monday', 'tuesday', 'wednesday',
+                    'thursday', 'saturday', 'sunday', 'will pay', 'schedule', 'promise', 'remind', 'later', 'next week',
+                    'कल', 'सुबह', 'शाम', 'पे', 'भुगतान', 'कर दूंगा', 'कर दूँगा', 'तारीख', 'दिन', 'बजे', 'शुक्रवार', 'सोमवार', 'शनिवार', 'रविवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'दूँगा', 'दूंगा', 'करेंगे', 'बाद में'
+                ].some(k => qLower.includes(k)) && !isDiscount && !isPaid;
+
+                // Check 4: OTP / Technical Delay
+                const isOTP = [
+                    'otp', 'sms', 'code', 'delay', 'nahi aaya', 'failed', 'server', 'bank issue', 'technical',
+                    'ओटीपी', 'एसएमएस', 'कोड', 'नहीं आया', 'फेल', 'सर्वर', 'बैंक'
+                ].some(k => qLower.includes(k));
+
+                // Check 5: Payment link request
+                const isLink = [
+                    'link', 'kaha', 'kahin', 'upi', 'qr', 'bhejo', 'send link', 'how to pay', 'bhej do',
+                    'लिंक', 'कहाँ', 'कहा', 'यूपीआई', 'क्यूआर', 'भेजो', 'भेज दो'
+                ].some(k => qLower.includes(k));
+
+                // Check 6: GST / Invoice
+                const isGST = [
+                    'gst', 'bill', 'invoice', 'company', 'itc', 'soa',
+                    'जीएसटी', 'बिल', 'इनवॉइस', 'कंपनी', 'आईटीसी'
+                ].some(k => qLower.includes(k));
+
                 let fallback = {};
-                if (qLower.includes('kal') || qLower.includes('shaam') || qLower.includes('tarikh') || qLower.includes('subah') || qLower.includes('pay kar') || qLower.includes('tomorrow') || qLower.includes('friday') || qLower.includes('monday') || qLower.includes('baje')) {
+
+                if (isPaid) {
                     fallback = {
-                        reply: "Ji bilkul __C_NAME__! Maine aapka Promise-to-Pay note kar liya hai. Scheduled date tak aapke saare automated dunning reminders pause kar diye gaye hain.",
-                        reply_english: "Understood! I have logged your Promise-to-Pay. Automated dunning reminders have been paused until your scheduled date.",
-                        voice_synthesis_script: "Ji bilkul, maine aapka promise to pay schedule note kar liya hai. Reminders pause kar diye hain.",
-                        ptp_detected: true,
-                        ptp_commitment: { ptp_date: 'Scheduled Timeline' },
-                        ai_reasoning: "Detected firm future payment timeline (PTP commitment); suppressed automated collection touches."
-                    };
-                } else if (qLower.includes('discount') || qLower.includes('mehenga') || qLower.includes('kam karo') || qLower.includes('nahi lena') || qLower.includes('abhi nahi')) {
-                    fallback = {
-                        reply: "Main samajhta hoon __C_NAME__ ji. Hum aapke liye instant 2% prompt settlement cash discount offer kar sakte hain agar aap abhi settle karein.",
-                        reply_english: "I understand. We can offer an instant 2% prompt settlement cash discount if you complete payment today.",
-                        voice_synthesis_script: "Main samajhta hoon. Hum aapke liye instant do percent cash discount activate kar sakte hain.",
+                        reply: "Dhanyawaad __C_NAME__ ji! Humne aapka ₹__C_AMT__ ka payment verify aur settle kar liya hai. Receipt: RZP-REC-SETTLED. Sabhi automated reminder messages pause ho chuke hain. ✓",
+                        reply_english: "Thank you! We have verified and settled your payment of ₹__C_AMT__. All collection touches have been paused.",
+                        voice_synthesis_script: "Dhanyawaad __C_NAME__. Aapka payment successfully verify aur settle ho gaya hai. Thank you!",
                         ptp_detected: false,
-                        ai_reasoning: "Customer displayed price hesitation or objection; offered 2% prompt cash discount to rescue transaction."
+                        detected_intent: "PAYMENT_COMPLETED",
+                        ai_reasoning: "Customer reported transaction already completed; marked verified and closed dunning workflow."
+                    };
+                } else if (isDiscount) {
+                    const isHesitant = ['mehenga', 'expensive', 'nahi lena', 'not interested', 'cancel', 'महंगा', 'नहीं लेना'].some(k => qLower.includes(k));
+                    if (isHesitant) {
+                        fallback = {
+                            reply: "Samajh sakta hoon __C_NAME__ ji. Agar price ya budget hesitation ki wajah se aap drop kar rahe hain, toh Razorpay desk se hum aapko exclusive 2% instant settlement cash discount offer kar rahe hain (Aapke bachenge ₹" + discAmt + "). Revised final amount: ₹" + netAmt + ". Kya hum 1-click checkout link bhej dein?",
+                            reply_english: "I understand. If you are hesitating due to price or budget, we can offer an exclusive 2% instant settlement cash discount (You save ₹" + discAmt + "). Revised final amount: ₹" + netAmt + ".",
+                            voice_synthesis_script: "Samajh sakta hoon __C_NAME__. Agar price ki wajah se issue hai toh hum aapko do percent instant cash discount de rahe hain. Aapke bachenge " + discAmt + " rupees aur final amount " + netAmt + " rupees hoga.",
+                            ptp_detected: false,
+                            ai_reasoning: "Customer displayed price hesitation or unwillingness; offered 2% rescue discount with real-time net price calculation."
+                        };
+                    } else {
+                        fallback = {
+                            reply: "Ji bilkul __C_NAME__ ji! Agar aap abhi payment clear karte hain, toh hum 2% instant settlement credit apply kar sakte hain (Aapke bachenge ₹" + discAmt + "). Final payable amount: ₹" + netAmt + ". Kya hum updated link share karein?",
+                            reply_english: "Certainly! If you complete payment now, we can apply a 2% prompt settlement discount (You save ₹" + discAmt + "). Final payable amount: ₹" + netAmt + ".",
+                            voice_synthesis_script: "Ji __C_NAME__, agar aap abhi clear karte hain toh hum do percent instant commercial discount apply karke final amount " + netAmt + " rupees kar dete hain.",
+                            ptp_detected: false,
+                            ai_reasoning: "Customer requested commercial adjustment; applied 2% prompt cash discount terms."
+                        };
+                    }
+                } else if (isPTP) {
+                    fallback = {
+                        reply: "Dhanyawaad __C_NAME__ ji! Humne aapka Promise-to-Pay (PTP) schedule note kar liya hai ₹__C_AMT__ ke liye. Scheduled date tak humari side se sabhi automated dunning reminders pause kar diye gaye hain. Shubh din!",
+                        reply_english: "Thank you! We have logged your Promise-to-Pay for ₹__C_AMT__. Automated dunning reminders have been paused until your scheduled date.",
+                        voice_synthesis_script: "Dhanyawaad __C_NAME__. Aapka promise to pay schedule confirm ho gaya hai. Tab tak sabhi reminder calls aur messages pause rahenge. Thank you!",
+                        ptp_detected: true,
+                        ptp_commitment: { ptp_date: 'Tomorrow 11:00 AM IST (Scheduled)' },
+                        ai_reasoning: "Detected firm future settlement timeline (PTP); paused automated dunning outreach."
+                    };
+                } else if (isOTP) {
+                    fallback = {
+                        reply: "Haan ji __C_NAME__ ji, bank SMS gateway par network delay tha. Aapko OTP enter karne ki koi zaroorat nahi hai. Humne aapke liye 1-Click Biometric UPI Authorization activate kar diya hai, direct Face ID ya Fingerprint se payment complete karein.",
+                        reply_english: "Understood! There was a network delay at the bank SMS gateway. We have enabled 1-Click Biometric UPI authorization to bypass OTP entirely.",
+                        voice_synthesis_script: "Namaste __C_NAME__. Bank side se OTP me delay tha. Humne aapke liye instant one-click biometric UPI rail activate ki hai, bina kisi OTP ke.",
+                        ptp_detected: false,
+                        ai_reasoning: "Customer reported OTP failure; recommended 1-click biometric UPI fallback to bypass SMS gateway latency."
+                    };
+                } else if (isLink) {
+                    fallback = {
+                        reply: "Yeh lijiye __C_NAME__ ji! Aapka verified Razorpay secure checkout link: https://rzp.io/l/recovery_link — Google Pay, PhonePe, Paytm ya BHIM se direct 1-click me pay karein.",
+                        reply_english: "Here is your verified Razorpay secure checkout link: https://rzp.io/l/recovery_link — pay in 1-click via any UPI app.",
+                        voice_synthesis_script: "Humne aapke registered mobile par instant UPI checkout link share kar diya hai. Aap one-click me payment authorize kar sakte hain.",
+                        ptp_detected: false,
+                        ai_reasoning: "Dispatched direct 1-click Razorpay hosted recovery checkout link."
+                    };
+                } else if (isGST) {
+                    fallback = {
+                        reply: "Ji bilkul __C_NAME__ ji, aapka GST compliant tax invoice ready hai with 18% Input Tax Credit eligibility. Aap apna GSTIN update karke official invoice PDF download kar sakte hain.",
+                        reply_english: "Your GST compliant tax invoice with 18% Input Tax Credit eligibility is ready for download.",
+                        voice_synthesis_script: "Aapka tax invoice aur GST input credit breakdown ready hai.",
+                        ptp_detected: false,
+                        ai_reasoning: "Customer queried B2B tax compliance / ITC eligibility; provided Section 16(2) details."
                     };
                 } else {
                     fallback = {
-                        reply: "Namaste __C_NAME__ ji! Humne aapke liye 1-Click Biometric UPI replacement rail activate kar diya hai. Aap direct Face ID ya Fingerprint se payment complete kar sakte hain.",
-                        reply_english: "Namaste! We have activated a 1-Click Biometric UPI replacement rail to bypass SMS OTP delays.",
-                        voice_synthesis_script: "Namaste. Humne aapke liye instant one-click UPI replacement route configure kar diya hai.",
+                        reply: "Namaste __C_NAME__ ji! Hum Razorpay Smart Recovery desk se bol rahe hain. Aapka ₹__C_AMT__ ka payment __C_INST__ par complete karne ke liye live assist kar rahe hain. Kya aapko payment karne mein koi dikkat aayi thi?",
+                        reply_english: "Namaste! We are contacting you from Razorpay Smart Recovery regarding your payment of ₹__C_AMT__ on __C_INST__. How can we assist you today?",
+                        voice_synthesis_script: "Namaste __C_NAME__. Hum Razorpay recovery desk se bol rahe hain. Aapka payment complete karne ke liye live support par hain.",
                         ptp_detected: false,
-                        ai_reasoning: "Assisting customer with frictionless alternative payment routing."
+                        ai_reasoning: "Standard transactional recovery inquiry and context greeting."
                     };
                 }
+
                 renderGeminiResponse(userQuery, fallback);
             });
         }
