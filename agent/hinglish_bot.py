@@ -455,7 +455,7 @@ Return strictly valid JSON with this schema:
         detected_intent = "PAYMENT_LINK_REQUEST"
         response_text = (
             f"Yeh lijiye {customer_name}! Aapka verified Razorpay secure checkout link: "
-            f"👉 [Tap here to Pay ₹{amount:,.2f} via UPI](http://localhost:8000/pay/{txn_id}?txn={txn_id}&amount={amount}) "
+            f"👉 [Tap here to Pay ₹{amount:,.2f} via UPI](https://rzp.io/l/recovery_{txn_id}?amount={amount}) "
             f"— Google Pay, PhonePe, Paytm ya BHIM se direct 1-click me pay karein."
         )
         voice_script = (
