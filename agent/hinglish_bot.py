@@ -138,12 +138,32 @@ def process_hinglish_chat(
     failure_reason = ctx.get("failure_reason", "Bank switch timeout / OTP latency")
     msg_lower = user_message.lower()
 
-    # Fast PTP & Payment Completed checks
+    # Fast PTP & Payment Completed & Reluctance checks
     is_paid_claim = any(w in msg_lower for w in [
         "pay kar diya", "paid", "payment ho gaya", "done payment",
         "transfer kar diya", "reconcile", "paise bhej diye", "already paid", "payment done"
     ])
     fast_ptp = parse_ptp_intent(user_message)
+
+    # Customer reluctance, price objection, dropping out, or asking for discount
+    is_discount_intent = any(w in msg_lower for w in [
+        "not interested", "nahi lena", "nahi chahiye", "dont want", "don't want",
+        "expensive", "mehenga", "mehanga", "costly", "too high", "jyada hai", "jyada lag raha",
+        "cancel", "drop", "nahi kharidna", "budget", "paise nahi", "man nahi",
+        "chhod do", "leave it", "no thanks", "nahi karna", "soch raha hu", "hesitant",
+        "discount", "kam karo", "offer", "coupon", "cashback", "kuch kam", "bargain", "kam karo na", "less price"
+    ])
+
+    # Customer willing to pay / specifying date / PTP
+    is_ptp_claim = (
+        (fast_ptp is not None) or
+        any(w in msg_lower for w in [
+            "will pay", "pay tomorrow", "pay on", "pay by", "kal dunga", "kal karunga",
+            "bhej dunga", "kal shaam", "parso", "somwar", "friday", "next week",
+            "salary", "baje", "10 am", "11 am", "schedule", "do payment",
+            "promise to pay", "kar dunga", "pakka pay", "clear kar dunga"
+        ])
+    ) and not is_paid_claim and not is_discount_intent
 
     # Attempt Live Gemini Generation
     api_key = get_gemini_api_key()
@@ -158,31 +178,37 @@ You assist Indian customers whose payment dropped during checkout or invoice set
 TRANSACTION CONTEXT & CALENDAR GROUNDING:
 - Customer Name: {customer_name}
 - Transaction ID: #{txn_id}
-- Amount: ₹{amount:,.2f}
+- Original Amount: ₹{amount:,.2f}
 - Failed Instrument: {failed_inst}
 - Technical Friction: {failure_reason}
-- Eligible 2% Prompt Discount: Save ₹{discount_amt:,.2f} (Net payable: ₹{net_amt:,.2f})
 - CURRENT DATE: {today_date_str} (Operating in Year 2026)
 
-ADVANCED MULTI-STEP REASONING & RECOVERY GUIDELINES:
-1. Intent & Sentiment Analysis:
-   - Analyze customer emotion (hesitation, technical frustration, willingness to pay, price sensitivity).
-   - Reason through the optimal conversational response in "ai_reasoning".
-2. Bilingual Response Delivery:
-   - Provide "reply_hinglish": Natural, respectful, conversational Indian business Hinglish formatted with markdown.
-   - Provide "reply_english": Accurate, professional English translation of what Aarav told the customer.
-3. Promise-to-Pay (PTP) Extraction:
-   - If customer mentions paying at any future time/day (e.g., "15 September", "tomorrow 11 AM", "kal 6 baje", "salary date", "next Friday"):
-     * Set "ptp_detected": true
-     * Set "detected_intent": "PROMISE_TO_PAY"
-     * Extract exact "ptp_time" formatted as "2026-MM-DD hh:mm A IST".
-     * Reassure customer that automated dunning touches are paused until then.
-4. Payment Claim Verification:
-   - If customer states they completed payment, set "detected_intent": "PAYMENT_COMPLETED" and confirm instant escrow verification.
-5. Technical Friction & Discount:
-   - If OTP/Bank drop-off, empathize with {failed_inst} switch latency and offer 1-Click Biometric UPI retry.
-   - If discount requested, offer the 2% instant settlement credit (Save ₹{discount_amt:,.2f}).
-6. Voice TTS Output:
+CRITICAL DISCOUNT & PRICING RULES (STRICT MARGIN PROTECTION):
+1. **ZERO DISCOUNT FOR WILLING BUYERS / PROMISE-TO-PAY (PTP) / TECHNICAL ISSUES**:
+   - If the customer agrees to pay, mentions a date/time (e.g., "I will pay tomorrow by 11 AM", "kal shaam ko", "salary ke baad"), or asks about OTP / link:
+     * **DO NOT** offer or mention any discount.
+     * The transaction remains at the **FULL original amount ₹{amount:,.2f}**.
+     * Confirm the Promise-to-Pay (PTP) booking and reassure that automated reminders are paused.
+2. **2% PROMPT CASH DISCOUNT (Save ₹{discount_amt:,.2f} • Net payable: ₹{net_amt:,.2f}) IS RESERVED EXCLUSIVELY FOR**:
+   - The customer stating they are NOT interested in buying / paying (e.g., "not interested", "nahi lena", "nahi chahiye", "cancel kar do", "chhod do", "don't want to spend").
+   - The customer expressing price hesitation or budget constraints (e.g., "too expensive", "mehenga hai", "budget nahi hai", "out of budget").
+   - The customer explicitly negotiating or asking for a discount/coupon (e.g., "kuch discount milega?", "kam karo na", "any offer?").
+   - In these reluctant/drop-off cases ONLY, offer the 2% discount incentive as a strategic recovery rescue lever to win back the hesitant buyer!
+
+INTENT & CONVERSATION GUIDELINES:
+1. **Promise-to-Pay (PTP) / Future Date**:
+   - Set "detected_intent": "PROMISE_TO_PAY", "ptp_detected": true, extract "ptp_time" formatted as "2026-MM-DD hh:mm A IST".
+   - Confirm booking for full price ₹{amount:,.2f} without any discount.
+2. **Customer Reluctant / Not Interested / Asking Discount**:
+   - Set "detected_intent": "DISCOUNT_NEGOTIATION", "ptp_detected": false.
+   - Empathize with their hesitation and present the exclusive 2% instant settlement credit (Save ₹{discount_amt:,.2f} • Revised net total: ₹{net_amt:,.2f}).
+3. **Technical Issue (OTP / Bank failure)**:
+   - Set "detected_intent": "TECHNICAL_ISSUE_OTP", "ptp_detected": false.
+   - Explain gateway network latency and provide 1-Click Biometric UPI retry link at full price without discount.
+4. **Payment Completed**:
+   - Set "detected_intent": "PAYMENT_COMPLETED", "ptp_detected": false.
+   - Confirm escrow verification and thank the customer.
+5. **Voice TTS Output**:
    - In "voice_synthesis_script": generate natural, fluent conversational Indian Hinglish dialogue with ZERO asterisks or markdown, optimized for speech synthesis.
 
 Return strictly valid JSON with this schema:
@@ -213,25 +239,38 @@ Return strictly valid JSON with this schema:
                     reply_h = f"Namaste {customer_name}! Hum Razorpay Smart Recovery desk se bol rahe hain. Aapka payment securely complete karne ke liye 1-Click UPI alternative available hai."
                 
                 reply_eng = data.get("reply_english") or "Hello! We are reaching out from the Razorpay Smart Recovery desk to assist you with completing your transaction."
-                ai_reasoning = data.get("ai_reasoning") or f"Customer expressed drop-off friction regarding {failed_inst}. Grounded transaction context with 2% discount incentive and 1-Click recovery."
+                ai_reasoning = data.get("ai_reasoning") or f"Customer expressed drop-off friction regarding {failed_inst}. Handled with targeted recovery strategy."
                 mapped_kw = data.get("mapped_keywords") or [f"Customer: {customer_name}", f"Amount: ₹{amount:,.2f}", f"Instrument: {failed_inst}"]
                 
                 voice_script = data.get("voice_synthesis_script", "") or reply_h
                 intent = data.get("detected_intent", "GENERAL_RECOVERY")
                 if is_paid_claim:
                     intent = "PAYMENT_COMPLETED"
+                elif is_discount_intent:
+                    intent = "DISCOUNT_NEGOTIATION"
+                    if "2% instant" not in reply_h and "2% discount" not in reply_h and "save ₹" not in reply_h.lower():
+                        reply_h += f"\n\nHum aapko exclusive **2% instant settlement discount** de sakte hain (Save ₹{discount_amt:,.2f} • Net payable: ₹{net_amt:,.2f})."
+                    if "2% instant" not in reply_eng and "2% discount" not in reply_eng and "save ₹" not in reply_eng.lower():
+                        reply_eng += f"\n\nWe can offer you an exclusive **2% instant settlement discount** (Save ₹{discount_amt:,.2f} • Net payable: ₹{net_amt:,.2f})."
+                elif is_ptp_claim or data.get("ptp_detected", False) or intent == "PROMISE_TO_PAY":
+                    intent = "PROMISE_TO_PAY"
+                    # Clean out any accidental discount mentions if customer agreed to pay
+                    disc_phrases = [
+                        f"Hum aapko 2% instant settlement discount de sakte hain (Save ₹{discount_amt:,.2f}).",
+                        f"We can offer you a 2% instant settlement discount (Save ₹{discount_amt:,.2f}).",
+                        f"2% instant settlement discount (Save ₹{discount_amt:,.2f})",
+                        f"Save ₹{discount_amt:,.2f}"
+                    ]
+                    for dp in disc_phrases:
+                        reply_h = reply_h.replace(dp, "")
+                        reply_eng = reply_eng.replace(dp, "")
+                        voice_script = voice_script.replace(dp, "")
                 elif any(w in msg_lower for w in ["otp", "sms", "nahi aaya", "code"]):
                     intent = "TECHNICAL_ISSUE_OTP"
                     if "1-Click Biometric" not in reply_h and "1-click biometric" not in reply_h.lower():
                         reply_h += f"\n\nHumne aapke liye **1-Click Biometric UPI** authorization enable kar diya hai bina kisi OTP ke."
                     if "1-Click Biometric" not in reply_eng and "1-click biometric" not in reply_eng.lower():
                         reply_eng += f"\n\nWe have enabled **1-Click Biometric UPI** authorization for you without requiring any OTP."
-                elif any(w in msg_lower for w in ["discount", "kam karo", "offer", "coupon"]):
-                    intent = "DISCOUNT_NEGOTIATION"
-                    if "2% instant" not in reply_h:
-                        reply_h += f" Hum aapko 2% instant settlement discount de sakte hain (Save ₹{discount_amt:,.2f})."
-                    if "2% instant" not in reply_eng:
-                        reply_eng += f" We can offer you a 2% instant settlement discount (Save ₹{discount_amt:,.2f})."
                 elif any(w in msg_lower for w in ["link", "kaha pay", "bhejo", "pay link", "how to pay"]):
                     intent = "PAYMENT_LINK_REQUEST"
                     if "Razorpay secure checkout link" not in reply_h:
@@ -240,10 +279,10 @@ Return strictly valid JSON with this schema:
                         reply_eng += f"\n\nHere is your verified Razorpay secure checkout link: https://rzp.io/i/{txn_id}"
 
                 is_ptp_detected = (
-                    intent == "PROMISE_TO_PAY" or
+                    (intent == "PROMISE_TO_PAY") or
                     (fast_ptp is not None) or 
                     data.get("ptp_detected", False) or 
-                    any(w in msg_lower for w in ["will pay", "pay tomorrow", "pay on", "pay by", "kal dunga", "kal karunga", "bhej dunga", "promise to pay"])
+                    is_ptp_claim
                 ) and intent not in ["PAYMENT_COMPLETED", "TECHNICAL_ISSUE_OTP", "DISCOUNT_NEGOTIATION", "PAYMENT_LINK_REQUEST"]
 
                 ptp_detected = is_ptp_detected
@@ -272,7 +311,7 @@ Return strictly valid JSON with this schema:
                         pass
                 elif ptp_detected:
                     intent = "PROMISE_TO_PAY"
-                    if "Promise-to-Pay" not in reply_h and "PTP" not in reply_h and "note" not in reply_h.lower():
+                    if "Promise-to-Pay" not in reply_h and "PTP" not in reply_h:
                         reply_h = f"Dhanyawaad {customer_name}! Humne aapka Promise-to-Pay (PTP) schedule kar liya hai: 📅 **{ptp_time}** ko ₹{amount:,.2f} ke liye. " + reply_h
                     try:
                         ptp_record = insert_promise_to_pay({
@@ -327,10 +366,22 @@ Return strictly valid JSON with this schema:
     detected_intent = "GENERAL_RECOVERY"
     ptp_scheduled = None
     now_utc = datetime.now(timezone.utc)
+    
+    is_discount_fallback = any(w in msg_lower for w in [
+        "not interested", "nahi lena", "nahi chahiye", "dont want", "don't want",
+        "expensive", "mehenga", "mehanga", "costly", "too high", "jyada hai", "jyada lag raha",
+        "cancel", "drop", "nahi kharidna", "budget", "paise nahi", "man nahi",
+        "chhod do", "leave it", "no thanks", "nahi karna", "soch raha hu", "hesitant",
+        "discount", "kam karo", "offer", "coupon", "cashback", "kuch kam", "bargain", "kam karo na", "less price"
+    ])
+
     is_ptp_fallback = (
         (fast_ptp is not None) or
-        any(w in msg_lower for w in ["will pay", "do payment", "pay tomorrow", "pay on", "pay by", "payment kar", "kar dunga", "bhej dunga", "schedule", "clear", "settle", "promise", "remind"])
-    ) and not is_paid_claim
+        any(w in msg_lower for w in [
+            "will pay", "do payment", "pay tomorrow", "pay on", "pay by", "payment kar",
+            "kar dunga", "bhej dunga", "schedule", "clear", "settle", "promise", "remind", "pakka pay"
+        ])
+    ) and not is_paid_claim and not is_discount_fallback
 
     if is_paid_claim:
         detected_intent = "PAYMENT_COMPLETED"
@@ -362,6 +413,31 @@ Return strictly valid JSON with this schema:
             f"Dhanyawaad {customer_name}. Aapka payment successfully verify aur settle ho gaya hai. Thank you!"
         )
 
+    elif is_discount_fallback:
+        detected_intent = "DISCOUNT_NEGOTIATION"
+        discount_amt = round(amount * 0.02, 2)
+        net_amt = round(amount - discount_amt, 2)
+        if any(w in msg_lower for w in ["not interested", "nahi lena", "nahi chahiye", "mehenga", "expensive", "costly", "cancel", "drop", "nahi kharidna", "budget", "chhod"]):
+            response_text = (
+                f"Samajh sakta hu {customer_name}. Agar price ya budget hesitation ki wajah se aap drop kar rahe hain, "
+                f"toh Razorpay desk se hum aapko exclusive **2% instant settlement cash discount** de sakte hain (Aapke bachenge ₹{discount_amt:,.2f}). "
+                f"Revised settlement amount: **₹{net_amt:,.2f}**. Kya hum 1-click checkout link bhej dein?"
+            )
+            voice_script = (
+                f"Samajh sakta hu {customer_name}. Agar price ki wajah se issue hai toh hum aapko do percent "
+                f"instant cash discount offer kar rahe hain. Aapke bachenge {discount_amt} rupees aur final amount {net_amt} rupees hoga."
+            )
+        else:
+            response_text = (
+                f"Samajh sakta hu {customer_name}. Agar aap agle 30 minutes me payment complete karte hain, "
+                f"toh hum 2% instant settlement credit apply kar sakte hain (Aapke bachenge ₹{discount_amt:,.2f}). "
+                f"Final amount: **₹{net_amt:,.2f}**. Kya hum updated link bhej dein?"
+            )
+            voice_script = (
+                f"Ji {customer_name}, agar aap abhi clear karte hain toh hum do percent instant commercial credit "
+                f"apply karke final amount {net_amt} rupees kar dete hain."
+            )
+
     elif any(w in msg_lower for w in ["otp", "sms", "delay", "nahi aaya", "code"]):
         detected_intent = "TECHNICAL_ISSUE_OTP"
         response_text = (
@@ -373,20 +449,6 @@ Return strictly valid JSON with this schema:
         voice_script = (
             f"Namaste {customer_name}. Bank side se OTP me delay tha. "
             f"Humne aapke liye instant one-click UPI rail activate ki hai, bina kisi OTP ke."
-        )
-
-    elif any(w in msg_lower for w in ["discount", "kam karo", "offer", "coupon", "cashback"]):
-        detected_intent = "DISCOUNT_NEGOTIATION"
-        discount_amt = round(amount * 0.02, 2)
-        net_amt = round(amount - discount_amt, 2)
-        response_text = (
-            f"Samajh sakta hu {customer_name}. Agar aap agle 30 minutes me payment complete karte hain, "
-            f"toh hum 2% instant settlement credit apply kar sakte hain (Aapke bachenge ₹{discount_amt:,.2f}). "
-            f"Final amount: **₹{net_amt:,.2f}**. Kya hum updated link bhej dein?"
-        )
-        voice_script = (
-            f"Ji {customer_name}, agar aap abhi clear karte hain toh hum do percent instant commercial credit "
-            f"apply karke final amount {net_amt} rupees kar dete hain."
         )
 
     elif any(w in msg_lower for w in ["kaha pay kare", "link bhejo", "upi", "qr", "how to pay", "pay link", "bhejo"]):

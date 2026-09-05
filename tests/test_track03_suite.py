@@ -79,7 +79,15 @@ def test_hinglish_intent_technical_otp():
 def test_hinglish_intent_discount_negotiation():
     res = process_hinglish_chat("kuch discount milega kya agar abhi pay karein?")
     assert res["detected_intent"] == "DISCOUNT_NEGOTIATION"
-    assert "2% instant" in res["reply"]
+    assert "2% instant" in res["reply"] or "2% discount" in res["reply"]
+
+def test_hinglish_intent_not_interested_offers_discount():
+    res = process_hinglish_chat(
+        "bohot mehenga lag raha hai, abhi nahi lena mujhe drop kar do",
+        context={"customer_name": "Rohan", "amount": 4000.0}
+    )
+    assert res["detected_intent"] == "DISCOUNT_NEGOTIATION"
+    assert "2% instant" in res["reply"] or "Save ₹80.00" in res["reply"] or "2%" in res["reply"]
 
 def test_hinglish_ptp_intent_and_auto_booking():
     res = process_hinglish_chat(
@@ -87,9 +95,12 @@ def test_hinglish_ptp_intent_and_auto_booking():
         context={"customer_name": "Sharma Ji", "amount": 5500.0, "transaction_id": "txn_ptp_unit_01"}
     )
     assert res["detected_intent"] == "PROMISE_TO_PAY"
-    assert "Promise-to-Pay" in res["reply"]
+    assert "Promise-to-Pay" in res["reply"] or "PTP" in res["reply"]
     assert res["ptp_commitment"] is not None
     assert res["ptp_commitment"]["amount"] == 5500.0
+    # Strict margin protection: No discount offered to willing buyers!
+    assert "2% instant" not in res["reply"]
+    assert "discount" not in res["reply"].lower()
 
 # --- 3. Promise to Pay (PTP) Ledger Tests ---
 def test_ptp_lifecycle():

@@ -2066,10 +2066,13 @@ with track_tab_chat:
             <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; border-top:1px dashed #e2e8f0; padding-top:6px;">
                 <span style="font-size:10px; color:#64748b; font-weight:700;">Instant Voice Presets:</span>
                 <button type="button" onclick="simulateVoice('I will do payment on this and this day by 11:00 AM tomorrow')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
-                    🗣️ "I will pay tomorrow 11 AM"
+                    🗣️ "I will pay tomorrow 11 AM" (PTP)
                 </button>
-                <button type="button" onclick="simulateVoice('Kal shaam ko 6 baje pakka pay kar dunga')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
-                    🗣️ "Kal shaam 6 baje"
+                <button type="button" onclick="simulateVoice('Bohot mehenga lag raha hai bhai, abhi nahi lena mujhe')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
+                    🗣️ "Nahi lena, mehenga hai" (Not Interested)
+                </button>
+                <button type="button" onclick="simulateVoice('Kuch discount milega kya? Turant pay kar dunga')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
+                    🗣️ "Discount milega kya?"
                 </button>
                 <button type="button" onclick="simulateVoice('OTP nahi aaya bhai payment fail ho gaya')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
                     🗣️ "OTP nahi aaya"
@@ -2297,10 +2300,10 @@ with track_tab_chat:
         st.caption("Click any real-world Indian buyer objection to test:")
         
         q_prompts = [
-            "OTP nahi aaya bhai, payment fail ho gaya",
-            "Kal subah 10 baje pakka pay kar dunga",
-            "Kuch discount milega kya? Turant pay kar dunga",
-            "Payment link dobara bhej do please",
+            "Kal subah 10 baje pakka pay kar dunga (PTP Commitment)",
+            "Bohot mehenga lag raha hai, abhi nahi lena mujhe (Not Interested)",
+            "Kuch discount milega kya? Turant pay kar dunga (Discount Ask)",
+            "OTP nahi aaya bhai, payment fail ho gaya (Technical OTP)",
             "Company policy ke mutabik payment Friday ko release hoga"
         ]
         
