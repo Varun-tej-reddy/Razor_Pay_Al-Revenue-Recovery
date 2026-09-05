@@ -131,7 +131,7 @@ Tested against an exhaustive 60-transaction synthetic benchmark with real teleme
 
 ---
 
-## 🎬 6. Live 2-Minute Jury Demo Script
+## 🎬 6. Live Jury Demo Script
 
 Follow this exact flow during hackathon judging for maximum impact:
 
@@ -197,50 +197,7 @@ streamlit run dashboard/app.py
 ```
 Open your browser at **`http://localhost:8501`**.
 
----
-
-## ☁️ 8. Deploying Live to Render
-
-The repository includes a ready-to-use **`render.yaml`** blueprint for instant deployment.
-
-### Method A: Connect via GitHub (Recommended)
-1. Push this repository to your GitHub account (`https://github.com/Varun-tej-reddy/Razor_Pay_Al-Revenue-Recovery`).
-2. Log in to [Render.com](https://dashboard.render.com).
-3. Click **"New +"** ➔ **"Web Service"**.
-4. Connect your GitHub repository: `Razor_Pay_Al-Revenue-Recovery`.
-5. Configure the service settings:
-   * **Name**: `razorrevive-recovery-agent`
-   * **Runtime**: `Python 3`
-   * **Build Command**: `pip install --upgrade pip && pip install -r requirements.txt`
-   * **Start Command**: `streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false`
-6. Add Environment Variables in Render Dashboard:
-   * `PYTHON_VERSION`: `3.9.18`
-   * `GEMINI_API_KEY`: *(Your Google AI Studio Gemini API Key)*
-   * `DATABASE_URL`: `sqlite:///recovery_audit.db`
-   * `STREAMLIT_SERVER_HEADLESS`: `true`
-7. Click **"Deploy Web Service"**. Your live app will be accessible at `https://razorrevive-recovery-agent.onrender.com`.
-
----
-
-## 📡 9. REST API Documentation & Endpoints
-
-RazorRevive exposes a high-performance **FastAPI** backend:
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | System health check, database status & timestamp. |
-| `POST` | `/run-batch` | Runs autonomous recovery pipeline across transactions. |
-| `GET` | `/audit-trail/{batch_id}` | Fetches immutable transaction audit logs. |
-| `GET` | `/report/{batch_id}` | Computes quantitative ROI & Honest Exceptions Report. |
-| `POST` | `/api/chat/hinglish` | Conversational Hinglish AI endpoint with PTP extraction. |
-| `GET` | `/api/ptp` | Retrieves all Promise-to-Pay records from the database. |
-| `POST` | `/api/ptp` | Creates a new Promise-to-Pay commitment. |
-| `PATCH` | `/api/ptp/{ptp_id}/status` | Updates PTP status (`honored`, `cancelled`, `broken`). |
-| `GET` | `/pay/{link_id}` | Hosted Razorpay 1-Click Biometric Checkout Portal. |
-
----
-
-## 🧪 10. Test Suite Verification (46/46 Passing)
+## 🧪 8. Test Suite Verification (46/46 Passing)
 
 RazorRevive includes exhaustive test coverage across all subsystems:
 
@@ -266,4 +223,4 @@ tests/test_track03_suite.py ............                                 [100%]
 
 ## 👨‍💻 Built For
 **Razorpay Hackathon 2026 — Track 03: Autonomous Checkout Drop-Off Recovery Agent**  
-*Engineered by Varun Tej Reddy & Team*
+*Engineered by Varun Tej Reddy *
