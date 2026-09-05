@@ -21,44 +21,45 @@ from agent.llm_client import call_gemini, clean_json_response, get_gemini_api_ke
 
 def parse_ptp_intent(user_message: str) -> Optional[str]:
     """
-    Extracts promised payment dates/times from customer messages in Hinglish and English.
-    Examples:
-    - "I'll do payment on this and this day by 11:00 AM tomorrow"
-    - "I will pay tomorrow at 11 am"
-    - "kal subah 10 baje"
-    - "tomorrow evening at 6 pm"
-    - "monday morning 11 am"
-    - "friday ko release hoga"
-    - "salary aane ke baad pay kar dunga"
+    Extracts promised payment dates/times from customer messages in Hinglish, English, and Hindi.
+    Handles explicit dates ("15th sept", "15 september", "tomorrow 11 am", "kal subah 10 baje", "कल सुबह १० बजे").
     """
     msg = user_message.lower().strip()
     now = datetime.now(timezone.utc)
     curr_year = 2026  # Grounded current operating year
-    
-    # 1. Check for specific time expressions (e.g. 11:00 AM, 11am, 10:30, 6 pm, 4:00, 10 baje)
-    time_match = re.search(r'\b(\d{1,2})(?::(\d{2}))?\s*(am|pm|baje|hours)?\b', msg, re.IGNORECASE)
+
+    # Normalize Devanagari numerals to ASCII
+    devanagari_digits = {"०": "0", "१": "1", "२": "2", "३": "3", "४": "4", "५": "5", "६": "6", "७": "7", "८": "8", "९": "9"}
+    for d_char, a_char in devanagari_digits.items():
+        msg = msg.replace(d_char, a_char)
+
+    # Strip ordinal suffixes from numbers like 15th, 1st, 2nd, 3rd to prevent eager group regex mis-match
+    msg_normalized = re.sub(r"\b(\d{1,2})(?:st|nd|rd|th)\b", r"\1", msg)
+
+    # 1. Check for specific time expressions (e.g. 11:00 AM, 11am, 10:30, 6 pm, 4:00, 10 baje, १० बजे)
+    time_match = re.search(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm|baje|बजे|hours)?\b", msg_normalized, re.IGNORECASE)
     time_str = "11:00 AM"
     if time_match:
         hour = int(time_match.group(1))
         minute = time_match.group(2) or "00"
         ampm = (time_match.group(3) or "").lower()
-        if ampm in ["pm", "shaam", "raat", "evening"] and hour < 12:
+        if ampm in ["pm", "shaam", "sham", "raat", "evening", "शाम", "रात"] and hour < 12:
             ampm_str = "PM"
-        elif ampm in ["am", "subah", "morning"] or hour == 12:
+        elif ampm in ["am", "subah", "morning", "सुबह"] or hour == 12:
             ampm_str = "AM" if hour < 12 else "PM"
         elif hour >= 12:
             ampm_str = "PM"
             if hour > 12:
                 hour -= 12
-        elif hour >= 7 and hour <= 11:
+        elif 7 <= hour <= 11:
             ampm_str = "AM"
-        elif hour >= 1 and hour <= 6:
+        elif 1 <= hour <= 6:
             ampm_str = "PM"
         else:
             ampm_str = "AM"
         time_str = f"{hour:02d}:{minute} {ampm_str}"
 
-    # 2. Check for explicit month-date formats (e.g., "15 september", "15th sept", "1st october", "1st का अक्टूबर")
+    # 2. Check for explicit month-date formats (e.g., "15 september", "15 sept", "1st october", "15 का सितंबर")
     month_map = {
         "jan": 1, "january": 1, "जनवरी": 1,
         "feb": 2, "february": 2, "फरवरी": 2,
@@ -73,7 +74,8 @@ def parse_ptp_intent(user_message: str) -> Optional[str]:
         "nov": 11, "november": 11, "नवंबर": 11,
         "dec": 12, "december": 12, "दिसंबर": 12
     }
-    date_month_match = re.search(r'(\d{1,2})(?:st|nd|rd|th)?(?:\s+(?:of|ka|ko|ke)?\s+)?([a-zA-Z\u0900-\u097F]+)', msg)
+
+    date_month_match = re.search(r"\b(\d{1,2})\s*(?:of\s+|ka\s+|ko\s+|ke\s+|का\s+|को\s+|के\s+)?([a-zA-Z\u0900-\u097F]+)", msg_normalized)
     if date_month_match:
         d_val = int(date_month_match.group(1))
         m_word = date_month_match.group(2).lower()
@@ -81,44 +83,45 @@ def parse_ptp_intent(user_message: str) -> Optional[str]:
             if m_key in m_word:
                 return f"{curr_year}-{m_num:02d}-{d_val:02d} {time_str} IST"
 
-    month_date_match = re.search(r'([a-zA-Z\u0900-\u097F]+)\s+(\d{1,2})(?:st|nd|rd|th)?', msg)
+    month_date_match = re.search(r"([a-zA-Z\u0900-\u097F]+)\s+(\d{1,2})\b", msg_normalized)
     if month_date_match:
         m_word = month_date_match.group(1).lower()
-        d_val = int(month_date_date.group(2)) if 'month_date_date' in locals() else int(month_date_match.group(2))
+        d_val = int(month_date_match.group(2))
         for m_key, m_num in month_map.items():
             if m_key in m_word:
                 return f"{curr_year}-{m_num:02d}-{d_val:02d} {time_str} IST"
 
-    # 3. Check for day / relative date expressions
-    if any(w in msg for w in ["kal", "tomorrow", "next day", "following day"]):
+    # 3. Check for day / relative date expressions (multilingual)
+    if any(w in msg for w in ["kal", "tomorrow", "next day", "following day", "कल"]):
         target = now + timedelta(days=1)
         return f"{target.strftime('%Y-%m-%d')} {time_str} IST"
-    elif any(w in msg for w in ["parso", "day after tomorrow", "in 2 days", "after 2 days", "2 din"]):
+    elif any(w in msg for w in ["parso", "day after tomorrow", "in 2 days", "after 2 days", "2 din", "परसों", "परसो"]):
         target = now + timedelta(days=2)
         return f"{target.strftime('%Y-%m-%d')} {time_str} IST"
-    elif any(w in msg for w in ["monday", "somvaar", "somwar"]):
+    elif any(w in msg for w in ["monday", "somvaar", "somwar", "सोमवार"]):
         return f"{curr_year}-09-08 {time_str} IST"
-    elif any(w in msg for w in ["tuesday", "mangalvaar", "mangalwar"]):
+    elif any(w in msg for w in ["tuesday", "mangalvaar", "mangalwar", "मंगलवार"]):
         return f"{curr_year}-09-09 {time_str} IST"
-    elif any(w in msg for w in ["wednesday", "budhvaar", "budhwar"]):
+    elif any(w in msg for w in ["wednesday", "budhvaar", "budhwar", "बुधवार"]):
         return f"{curr_year}-09-10 {time_str} IST"
-    elif any(w in msg for w in ["thursday", "guruvaar", "guruwar"]):
+    elif any(w in msg for w in ["thursday", "guruvaar", "guruwar", "गुरुवार", "बृहस्पतिवार"]):
         return f"{curr_year}-09-11 {time_str} IST"
-    elif any(w in msg for w in ["friday", "shukravaar", "shukrawar"]):
+    elif any(w in msg for w in ["friday", "shukravaar", "shukrawar", "शुक्रवार"]):
         return f"{curr_year}-09-11 {time_str} IST"
-    elif any(w in msg for w in ["saturday", "shanivaar", "shaniwar", "weekend"]):
+    elif any(w in msg for w in ["saturday", "shanivaar", "shaniwar", "weekend", "शनिवार"]):
         return f"{curr_year}-09-12 {time_str} IST"
-    elif any(w in msg for w in ["sunday", "ravivaar", "raviwar"]):
+    elif any(w in msg for w in ["sunday", "ravivaar", "raviwar", "रविवार"]):
         return f"{curr_year}-09-13 {time_str} IST"
-    elif any(w in msg for w in ["salary", "vetan", "salery"]):
+    elif any(w in msg for w in ["salary", "vetan", "salery", "सैलरी", "वेतन"]):
         return f"{curr_year}-09-07 10:00 AM IST (Salary Credit Sync)"
-    elif any(w in msg for w in ["tonight", "shaam", "evening", "raat", "aaj shaam"]):
+    elif any(w in msg for w in ["tonight", "shaam", "evening", "raat", "aaj shaam", "आज शाम", "रात"]):
         return f"{now.strftime('%Y-%m-%d')} {time_str} IST"
-    elif any(w in msg for w in ["pay later", "kal dunga", "kal karunga", "baad me pay", "promise to pay", "schedule", "will pay"]):
+    elif any(w in msg for w in ["pay later", "kal dunga", "kal karunga", "baad me pay", "promise to pay", "schedule", "will pay", "बाद में", "पे करूँगा", "भुगतान कर दूँगा"]):
         target = now + timedelta(days=1)
         return f"{target.strftime('%Y-%m-%d')} {time_str} IST"
 
     return None
+
 
 def process_hinglish_chat(
     user_message: str,
@@ -141,7 +144,8 @@ def process_hinglish_chat(
     # Fast PTP & Payment Completed & Reluctance checks
     is_paid_claim = any(w in msg_lower for w in [
         "pay kar diya", "paid", "payment ho gaya", "done payment",
-        "transfer kar diya", "reconcile", "paise bhej diye", "already paid", "payment done"
+        "transfer kar diya", "reconcile", "paise bhej diye", "already paid", "payment done",
+        "कर दिया", "हो गया", "पे कर दिया", "भुगतान हो गया", "डन", "सक्सेस", "कट गए"
     ])
     fast_ptp = parse_ptp_intent(user_message)
 
@@ -151,7 +155,8 @@ def process_hinglish_chat(
         "expensive", "mehenga", "mehanga", "costly", "too high", "jyada hai", "jyada lag raha",
         "cancel", "drop", "nahi kharidna", "budget", "paise nahi", "man nahi",
         "chhod do", "leave it", "no thanks", "nahi karna", "soch raha hu", "hesitant",
-        "discount", "kam karo", "offer", "coupon", "cashback", "kuch kam", "bargain", "kam karo na", "less price"
+        "discount", "kam karo", "offer", "coupon", "cashback", "kuch kam", "bargain", "kam karo na", "less price",
+        "डिस्काउंट", "छूट", "सस्ता", "महंगा", "महंगी", "पैसा", "पैसे", "नहीं लेना", "नहीं चाहिए", "नहीं खरीदना", "कैंसिल", "बजट", "ऑफर"
     ])
 
     # Customer willing to pay / specifying date / PTP
@@ -161,7 +166,8 @@ def process_hinglish_chat(
             "will pay", "pay tomorrow", "pay on", "pay by", "kal dunga", "kal karunga",
             "bhej dunga", "kal shaam", "parso", "somwar", "friday", "next week",
             "salary", "baje", "10 am", "11 am", "schedule", "do payment",
-            "promise to pay", "kar dunga", "pakka pay", "clear kar dunga"
+            "promise to pay", "kar dunga", "pakka pay", "clear kar dunga",
+            "कल", "सुबह", "शाम", "पे", "भुगतान", "करूँगा", "कर दूँगा", "तारीख", "दिन", "बजे", "शुक्रवार", "सोमवार", "शनिवार", "रविवार", "मंगलवार", "बुधवार", "गुरुवार", "दूँगा", "दूंगा", "करेंगे", "बाद में"
         ])
     ) and not is_paid_claim and not is_discount_intent
 
@@ -367,21 +373,8 @@ Return strictly valid JSON with this schema:
     ptp_scheduled = None
     now_utc = datetime.now(timezone.utc)
     
-    is_discount_fallback = any(w in msg_lower for w in [
-        "not interested", "nahi lena", "nahi chahiye", "dont want", "don't want",
-        "expensive", "mehenga", "mehanga", "costly", "too high", "jyada hai", "jyada lag raha",
-        "cancel", "drop", "nahi kharidna", "budget", "paise nahi", "man nahi",
-        "chhod do", "leave it", "no thanks", "nahi karna", "soch raha hu", "hesitant",
-        "discount", "kam karo", "offer", "coupon", "cashback", "kuch kam", "bargain", "kam karo na", "less price"
-    ])
-
-    is_ptp_fallback = (
-        (fast_ptp is not None) or
-        any(w in msg_lower for w in [
-            "will pay", "do payment", "pay tomorrow", "pay on", "pay by", "payment kar",
-            "kar dunga", "bhej dunga", "schedule", "clear", "settle", "promise", "remind", "pakka pay"
-        ])
-    ) and not is_paid_claim and not is_discount_fallback
+    is_discount_fallback = is_discount_intent
+    is_ptp_fallback = is_ptp_claim or (fast_ptp is not None)
 
     if is_paid_claim:
         detected_intent = "PAYMENT_COMPLETED"

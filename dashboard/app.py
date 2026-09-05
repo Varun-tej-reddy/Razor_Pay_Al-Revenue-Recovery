@@ -2517,14 +2517,20 @@ with track_tab_chat:
                 <button type="button" onclick="simulateVoice('I will do payment on this and this day by 11:00 AM tomorrow')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
                     🗣️ "I will pay tomorrow 11 AM" (PTP)
                 </button>
+                <button type="button" onclick="simulateVoice('15th sept ko pakka payment clear kar dunga')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
+                    📅 "15th sept ko karunga" (PTP)
+                </button>
                 <button type="button" onclick="simulateVoice('Bohot mehenga lag raha hai bhai, abhi nahi lena mujhe')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
-                    🗣️ "Nahi lena, mehenga hai" (Not Interested)
+                    🗣️ "Nahi lena, mehenga hai"
                 </button>
                 <button type="button" onclick="simulateVoice('Kuch discount milega kya? Turant pay kar dunga')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
-                    🗣️ "Discount milega kya?"
+                    🏷️ "Discount milega kya?"
                 </button>
                 <button type="button" onclick="simulateVoice('OTP nahi aaya bhai payment fail ho gaya')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
-                    🗣️ "OTP nahi aaya"
+                    📱 "OTP nahi aaya"
+                </button>
+                <button type="button" onclick="simulateVoice('Maine payment kar diya hai, account se paise kat gaye')" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; border-radius:4px; padding:3px 8px; font-size:10px; cursor:pointer; font-weight:600;">
+                    ✓ "Payment kar diya hai"
                 </button>
             </div>
         </div>
@@ -2532,6 +2538,37 @@ with track_tab_chat:
         <script>
         let rec = null;
         let lastSpokenText = "Namaste __C_NAME__! Hum Razorpay Recovery desk se bol rahe hain. Aapka payment issue solve karne ke liye connect kiya hai.";
+
+        function submitToStreamlitChat(spokenText) {
+            try {
+                if (window.parent && window.parent.document) {
+                    const pdoc = window.parent.document;
+                    const textArea = pdoc.querySelector('textarea[data-testid="stChatInputTextArea"]') || pdoc.querySelector('div[data-testid="stChatInput"] textarea');
+                    if (textArea) {
+                        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+                        nativeInputValueSetter.call(textArea, spokenText);
+                        textArea.dispatchEvent(new Event('input', { bubbles: true }));
+                        setTimeout(() => {
+                            const sendBtn = pdoc.querySelector('button[data-testid="stChatInputSubmitButton"]') || pdoc.querySelector('div[data-testid="stChatInput"] button');
+                            if (sendBtn && !sendBtn.disabled) {
+                                sendBtn.click();
+                            } else {
+                                const enterEvent = new KeyboardEvent('keydown', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    keyCode: 13,
+                                    which: 13,
+                                    key: 'Enter'
+                                });
+                                textArea.dispatchEvent(enterEvent);
+                            }
+                        }, 120);
+                    }
+                }
+            } catch(e) {
+                console.warn('Voice chat forward bridge:', e);
+            }
+        }
 
         function startMic() {
             window.speechSynthesis.cancel();
@@ -2568,6 +2605,7 @@ with track_tab_chat:
                     document.getElementById('callTranscript').innerHTML = '<div><strong>You (Voice):</strong> ' + txt + '</div>';
                     if (event.results[0].isFinal) {
                         fetchGemini(txt);
+                        submitToStreamlitChat(txt);
                     }
                 };
 
@@ -2613,6 +2651,7 @@ with track_tab_chat:
         function simulateVoice(userText) {
             document.getElementById('callTranscript').innerHTML = '<div><strong>You (Spoken Input):</strong> ' + userText + '</div>';
             fetchGemini(userText);
+            submitToStreamlitChat(userText);
         }
 
         function renderGeminiResponse(userQuery, data) {
@@ -2811,7 +2850,7 @@ with track_tab_chat:
                                     if (window.parent.__ptp_dirty) {
                                         window.parent.__ptp_dirty = false;
                                         setTimeout(() => {
-                                            const refreshBtn = Array.from(window.parent.document.querySelectorAll('button')).find(b => b.innerText.includes('Refresh Ledger Data'));
+                                            const refreshBtn = Array.from(window.parent.document.querySelectorAll('button')).find(b => b.innerText.includes('Refresh Ledger'));
                                             if (refreshBtn) refreshBtn.click();
                                         }, 150);
                                     }
@@ -2861,28 +2900,33 @@ with track_tab_chat:
             .replace("__C_RAW_AMT__", str(c_amt))
             .replace("__C_INST__", c_inst)
         )
-        components.html(voice_terminal_html, height=480)
+        components.html(voice_terminal_html, height=520)
         
         st.markdown("##### ⚡ Quick Prompt Simulator")
         st.caption("Click any real-world Indian buyer objection to test:")
         
         q_prompts = [
-            "Kal subah 10 baje pakka pay kar dunga (PTP Commitment)",
-            "Bohot mehenga lag raha hai, abhi nahi lena mujhe (Not Interested)",
-            "Kuch discount milega kya? Turant pay kar dunga (Discount Ask)",
-            "OTP nahi aaya bhai, payment fail ho gaya (Technical OTP)",
-            "Company policy ke mutabik payment Friday ko release hoga"
+            ("🗣️ PTP Commitment (Tomorrow 11 AM)", "I will do payment on this and this day by 11:00 AM tomorrow"),
+            ("📅 PTP Specific Date (15th Sept)", "15th sept ko pakka payment clear kar dunga"),
+            ("🙅 Price Hesitation (Not Interested)", "Bohot mehenga lag raha hai, abhi nahi lena mujhe"),
+            ("🏷️ Discount Negotiation (2% Rescue)", "Kuch discount milega kya? Turant pay kar dunga"),
+            ("📱 Technical Failure / OTP Delay", "OTP nahi aaya bhai, payment fail ho gaya"),
+            ("✓ Already Paid / Reconcile", "Maine payment kar diya hai, account se paise kat gaye"),
+            ("🏢 B2B Net-30 Corporate Policy", "Company policy ke mutabik payment Friday ko release hoga")
         ]
         
-        for q in q_prompts:
-            if st.button(f"💬 \"{q}\"", key=f"qp_{q[:15]}", use_container_width=True):
+        for q_label, q_val in q_prompts:
+            if st.button(q_label, key=f"qp_{q_val[:18]}", use_container_width=True):
                 ctx_p = {"customer_name": c_name, "amount": c_amt, "failed_instrument": c_inst, "failure_reason": c_fail}
                 with st.spinner("⚡ Gemini AI generating response..."):
-                    bot_resp = process_hinglish_chat(q, context=ctx_p)
-                st.session_state.hinglish_messages.append({"sender": "user", "text": q, "time": "Just now"})
+                    bot_resp = process_hinglish_chat(q_val, context=ctx_p)
+                st.session_state.hinglish_messages.append({"sender": "user", "text": q_val, "time": "Just now"})
                 st.session_state.hinglish_messages.append({
                     "sender": "bot",
                     "text": bot_resp["reply_hinglish"],
+                    "reply_english": bot_resp.get("reply_english", ""),
+                    "ai_reasoning": bot_resp.get("ai_reasoning", ""),
+                    "mapped_keywords": bot_resp.get("mapped_keywords", []),
                     "time": "Just now",
                     "ptp_booked": bot_resp["ptp_detected"],
                     "ptp_details": bot_resp.get("ptp_details"),
@@ -2999,210 +3043,137 @@ with track_tab_ptp:
     st.markdown("### 📅 Promise-to-Pay (PTP) Ledger & Anti-Fatigue Shield")
     st.caption("Immutable SQLite audit registry tracking all verbal and conversational customer commitments. Automated dunning outreach (SMS, WhatsApp, IVR calls) is paused while a PTP is within its scheduled grace window.")
     
+    raw_ptp = get_promises_to_pay()
+    ptp_list = [dict(p) if not isinstance(p, dict) else p for p in raw_ptp]
+    
+    total_active_amt = sum(float(p.get("amount", 0.0)) for p in ptp_list if p.get("status") == "scheduled")
+    active_count = sum(1 for p in ptp_list if p.get("status") == "scheduled")
+    honored_amt = sum(float(p.get("amount", 0.0)) for p in ptp_list if p.get("status") == "honored")
+    honored_count = sum(1 for p in ptp_list if p.get("status") == "honored")
+    breached_amt = sum(float(p.get("amount", 0.0)) for p in ptp_list if p.get("status") == "breached")
+    breached_count = sum(1 for p in ptp_list if p.get("status") == "breached")
+    
+    # 4 KPI Summary Cards
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        render_html(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">ACTIVE PTP COMMITMENTS 📅</div>
+            <div style="font-size:20px; font-weight:800; color:#0c2340; margin:3px 0;">₹{total_active_amt:,.2f}</div>
+            <div style="display:inline-block; font-size:10px; font-weight:700; color:#0369a1; background:#e0f2fe; padding:2px 8px; border-radius:9999px;">{active_count} Active ({len(ptp_list)} Total Booked)</div>
+        </div>
+        """)
+    with m2:
+        render_html(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">ACTIVE / GRACE PERIOD 🛡️</div>
+            <div style="font-size:20px; font-weight:800; color:#7c3aed; margin:3px 0;">{active_count}</div>
+            <div style="display:inline-block; font-size:10px; font-weight:700; color:#6b21a8; background:#f3e8ff; padding:2px 8px; border-radius:9999px;">Dunning outreach suppressed</div>
+        </div>
+        """)
+    with m3:
+        render_html(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">HONORED & RECONCILED ✓</div>
+            <div style="font-size:20px; font-weight:800; color:#15803d; margin:3px 0;">₹{honored_amt:,.2f}</div>
+            <div style="display:inline-block; font-size:10px; font-weight:700; color:#15803d; background:#dcfce7; padding:2px 8px; border-radius:9999px;">{honored_count} Settled to Escrow</div>
+        </div>
+        """)
+    with m4:
+        render_html(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">BREACHED COMMITMENTS ⚠️</div>
+            <div style="font-size:20px; font-weight:800; color:#b91c1c; margin:3px 0;">₹{breached_amt:,.2f}</div>
+            <div style="display:inline-block; font-size:10px; font-weight:700; color:#991b1b; background:#fee2e2; padding:2px 8px; border-radius:9999px;">{breached_count} Dunning Resumed</div>
+        </div>
+        """)
+        
+    st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
+    
     ptp_col_live, ptp_col_new = st.columns([1.6, 0.9], gap="medium")
     
     with ptp_col_live:
-        raw_ptp = get_promises_to_pay()
-        ptp_list_dicts = [dict(p) for p in raw_ptp]
-        ptp_initial_json = json.dumps(ptp_list_dicts)
-
-        live_ptp_template = """
-        <div id="livePtpRoot" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#0c2340;">
-            <!-- Metrics Grid -->
-            <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px;">
-                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-                    <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">ACTIVE PTP COMMITMENTS 📅</div>
-                    <div id="ptpTotalAmt" style="font-size:20px; font-weight:800; color:#0c2340; margin:3px 0;">₹0.00</div>
-                    <div id="ptpTotalCount" style="display:inline-block; font-size:10px; font-weight:700; color:#0369a1; background:#e0f2fe; padding:2px 8px; border-radius:9999px;">0 Active</div>
-                </div>
-                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-                    <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">ACTIVE / GRACE PERIOD 🛡️</div>
-                    <div id="ptpActiveCount" style="font-size:20px; font-weight:800; color:#7c3aed; margin:3px 0;">0</div>
-                    <div style="display:inline-block; font-size:10px; font-weight:700; color:#6b21a8; background:#f3e8ff; padding:2px 8px; border-radius:9999px;">Dunning outreach suppressed</div>
-                </div>
-                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-                    <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">HONORED & RECONCILED ✓</div>
-                    <div id="ptpHonoredCount" style="font-size:20px; font-weight:800; color:#15803d; margin:3px 0;">₹0.00</div>
-                    <div id="ptpHonoredPill" style="display:inline-block; font-size:10px; font-weight:700; color:#15803d; background:#dcfce7; padding:2px 8px; border-radius:9999px;">0 Settled to Escrow</div>
-                </div>
-                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-                    <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">BREACHED COMMITMENTS ⚠️</div>
-                    <div id="ptpBreachedCount" style="font-size:20px; font-weight:800; color:#b91c1c; margin:3px 0;">₹0.00</div>
-                    <div id="ptpBreachedPill" style="display:inline-block; font-size:10px; font-weight:700; color:#991b1b; background:#fee2e2; padding:2px 8px; border-radius:9999px;">0 Dunning Resumed</div>
-                </div>
-            </div>
-
-            <!-- Header & Settle Button -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:13px; font-weight:800; color:#0c2340;">📋 Live Real-Time Audit Register</span>
-                    <span style="font-size:9px; font-weight:800; color:#15803d; background:#dcfce7; border:1px solid #86efac; border-radius:9999px; padding:2px 6px;">● LIVE SYNC</span>
-                </div>
-                <button id="btnSettleAll" onclick="settleAll()" style="background:#0052cc; color:#ffffff; border:none; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer;">
-                    ⚡ Settle All Active
-                </button>
-            </div>
-
-            <!-- Real-time Cards -->
-            <div id="ptpCardList" style="display:flex; flex-direction:column; gap:8px; max-height:480px; overflow-y:auto; padding-right:4px;">
-                <div style="font-size:11px; color:#64748b; text-align:center; padding:16px;">Connecting to SQLite Ledger...</div>
-            </div>
-        </div>
-
-        <script>
-        let currentRecords = __INITIAL_PTP_JSON__;
-
-        function formatINR(val) {
-            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(val);
-        }
-
-        function renderUI(list) {
-            let activeAmt = 0;
-            let honoredAmt = 0;
-            let breachedAmt = 0;
-            let totalAmt = 0;
-            let activeCount = 0;
-            let honoredCount = 0;
-            let breachedCount = 0;
-
-            list.forEach(p => {
-                const amt = parseFloat(p.amount || 0);
-                totalAmt += amt;
-                if (p.status === 'scheduled') {
-                    activeCount++;
-                    activeAmt += amt;
-                } else if (p.status === 'honored') {
-                    honoredCount++;
-                    honoredAmt += amt;
-                } else if (p.status === 'breached') {
-                    breachedCount++;
-                    breachedAmt += amt;
-                }
-            });
-
-            document.getElementById('ptpTotalAmt').innerText = formatINR(activeAmt);
-            document.getElementById('ptpTotalCount').innerText = activeCount + ' Active Commitments (' + list.length + ' Total Booked)';
-            document.getElementById('ptpActiveCount').innerText = activeCount;
-            document.getElementById('ptpHonoredCount').innerText = formatINR(honoredAmt);
-            document.getElementById('ptpHonoredPill').innerText = honoredCount + ' Settled to Escrow';
-            document.getElementById('ptpBreachedCount').innerText = formatINR(breachedAmt);
-            document.getElementById('ptpBreachedPill').innerText = breachedCount + ' Dunning Resumed';
-            document.getElementById('btnSettleAll').innerText = '⚡ Settle All Active (' + activeCount + ')';
-            document.getElementById('btnSettleAll').style.display = activeCount > 0 ? 'inline-block' : 'none';
-
-            if (list.length === 0) {
-                document.getElementById('ptpCardList').innerHTML = '<div style="font-size:11px; color:#64748b; text-align:center; padding:16px;">No Promise-to-Pay commitments logged yet.</div>';
-                return;
-            }
-
-            let html = '';
-            list.forEach(p => {
-                let pill = '';
-                if (p.status === 'scheduled') {
-                    pill = '<span style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">🛡️ ACTIVE (DUNNING PAUSED)</span>';
-                } else if (p.status === 'honored') {
-                    pill = '<span style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">✓ HONORED & SETTLED</span>';
-                } else {
-                    pill = '<span style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">❌ BREACHED (DUNNING RESUMED)</span>';
-                }
-
-                let actions = '';
-                if (p.status === 'scheduled') {
-                    actions = '<div style="display:flex; flex-direction:column; gap:4px; min-width:85px;">' +
-                        '<button data-id="' + p.id + '" data-status="honored" onclick="handleStatusClick(this)" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:4px; padding:4px 8px; font-size:10px; font-weight:700; cursor:pointer;">✓ Honor</button>' +
-                        '<button data-id="' + p.id + '" data-status="breached" onclick="handleStatusClick(this)" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:4px; padding:4px 8px; font-size:10px; font-weight:700; cursor:pointer;">❌ Breach</button>' +
-                    '</div>';
-                } else {
-                    actions = '<div style="font-size:10px; color:#64748b; font-weight:700; text-align:right; text-transform:uppercase;">' + p.status + '</div>';
-                }
-
-                html += '<div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; box-shadow:0 1px 3px rgba(0,0,0,0.02); display:flex; justify-content:space-between; align-items:center; gap:10px;">' +
-                    '<div style="flex:1;">' +
-                        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                            '<span style="font-size:12px; font-weight:800; color:#0c2340;">PTP #' + p.id + ' • ' + (p.customer_name || 'Customer') + '</span>' +
-                            '<span style="font-size:12px; font-weight:800; color:#0052cc;">' + formatINR(parseFloat(p.amount || 0)) + '</span>' +
-                        '</div>' +
-                        '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:10px; color:#475569; margin-bottom:3px;">' +
-                            pill +
-                            '<span>Target: <strong>' + (p.ptp_date || 'Pending') + '</strong></span>' +
-                            '<span>Via: ' + (p.channel || 'Voice/Chat') + '</span>' +
-                        '</div>' +
-                        '<div style="font-size:10px; color:#64748b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:360px;">' +
-                            'Notes: ' + (p.notes || 'Automated PTP promise') +
-                        '</div>' +
-                    '</div>' +
-                    actions +
-                '</div>';
-            });
-
-            document.getElementById('ptpCardList').innerHTML = html;
-        }
-
-        // Render initial database records immediately
-        renderUI(currentRecords);
-
-        function fetchPTP() {
-            fetch('http://localhost:8000/api/ptp')
-            .then(res => res.json())
-            .then(data => {
-                const list = data.records || [];
-                if (list.length > 0 || currentRecords.length === 0) {
-                    currentRecords = list;
-                    renderUI(list);
-                }
-            })
-            .catch(err => {
-                // Initial records stay rendered
-            });
-        }
-
-        function handleStatusClick(btn) {
-            const id = btn.getAttribute('data-id');
-            const newStatus = btn.getAttribute('data-status');
-            btn.disabled = true;
-            btn.innerText = 'Updating...';
-            updateStatus(id, newStatus);
-        }
-
-        function updateStatus(id, newStatus) {
-            currentRecords = currentRecords.map(p => {
-                if (String(p.id) === String(id)) {
-                    return Object.assign({}, p, { status: newStatus });
-                }
-                return p;
-            });
-            renderUI(currentRecords);
-
-            fetch('http://localhost:8000/api/ptp/' + id + '/status?new_status=' + newStatus, {
-                method: 'POST'
-            })
-            .then(() => fetchPTP())
-            .catch(err => {});
-        }
-
-        function settleAll() {
-            currentRecords = currentRecords.map(p => {
-                if (p.status === 'scheduled') {
-                    return Object.assign({}, p, { status: 'honored' });
-                }
-                return p;
-            });
-            renderUI(currentRecords);
-
-            const actives = currentRecords.filter(p => p.status === 'scheduled');
-            Promise.all(actives.map(p => 
-                fetch('http://localhost:8000/api/ptp/' + p.id + '/status?new_status=honored', { method: 'POST' })
-            )).then(() => fetchPTP()).catch(err => {});
-        }
-
-        // Auto-poll if FastAPI service is connected
-        fetchPTP();
-        setInterval(fetchPTP, 2000);
-        </script>
-        """
-        live_ptp_html = live_ptp_template.replace("__INITIAL_PTP_JSON__", ptp_initial_json)
-        components.html(live_ptp_html, height=660)
-    
+        h1, h2, h3 = st.columns([2.4, 1.3, 1.1])
+        with h1:
+            st.markdown("#### 📋 Live Real-Time Audit Register")
+        with h2:
+            if active_count > 0:
+                if st.button(f"⚡ Settle All Active ({active_count})", key="btn_settle_all_ptp", type="primary", use_container_width=True):
+                    for p in ptp_list:
+                        if p.get("status") == "scheduled":
+                            update_promise_to_pay_status(p["id"], "honored")
+                    st.toast("⚡ All active commitments marked as Honored & Settled!", icon="✓")
+                    st.rerun()
+        with h3:
+            if st.button("🔄 Refresh Ledger", key="btn_refresh_ptp_ledger", use_container_width=True):
+                st.rerun()
+                
+        # Status Filter Pills
+        status_filter = st.radio(
+            "Filter Commitments:",
+            ["All Records", "Active / Scheduled 🛡️", "Honored & Settled ✓", "Breached ⚠️"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
+        
+        filtered_ptp = ptp_list
+        if "Active" in status_filter:
+            filtered_ptp = [p for p in ptp_list if p.get("status") == "scheduled"]
+        elif "Honored" in status_filter:
+            filtered_ptp = [p for p in ptp_list if p.get("status") == "honored"]
+        elif "Breached" in status_filter:
+            filtered_ptp = [p for p in ptp_list if p.get("status") == "breached"]
+            
+        if not filtered_ptp:
+            st.info("No Promise-to-Pay commitments match the selected filter.")
+        else:
+            for p in filtered_ptp:
+                p_id = p.get("id")
+                p_name = p.get("customer_name") or "Customer"
+                p_amt = float(p.get("amount", 0.0))
+                p_date = p.get("ptp_date") or "Scheduled Time"
+                p_stat = p.get("status", "scheduled")
+                p_chan = p.get("channel", "Voice/Chat")
+                p_notes = p.get("notes") or "Automated PTP promise"
+                
+                if p_stat == "scheduled":
+                    pill_html = '<span style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">🛡️ ACTIVE (DUNNING PAUSED)</span>'
+                elif p_stat == "honored":
+                    pill_html = '<span style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">✓ HONORED & SETTLED</span>'
+                else:
+                    pill_html = '<span style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:10px; font-weight:800; padding:2px 8px; border-radius:9999px;">❌ BREACHED (DUNNING RESUMED)</span>'
+                
+                card_c1, card_c2 = st.columns([3.8, 1.2])
+                with card_c1:
+                    render_html(f"""
+                    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; box-shadow:0 1px 3px rgba(0,0,0,0.02); margin-bottom:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:12.5px; font-weight:800; color:#0c2340;">PTP #{p_id} • {p_name}</span>
+                            <span style="font-size:13px; font-weight:800; color:#0052cc;">₹{p_amt:,.2f}</span>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:10.5px; color:#475569; margin-bottom:4px;">
+                            {pill_html}
+                            <span>Target: <strong>{p_date}</strong></span>
+                            <span>Via: {p_chan}</span>
+                        </div>
+                        <div style="font-size:10px; color:#64748b;">
+                            Notes: {p_notes}
+                        </div>
+                    </div>
+                    """)
+                with card_c2:
+                    if p_stat == "scheduled":
+                        if st.button("✓ Honor", key=f"btn_hon_{p_id}", use_container_width=True):
+                            update_promise_to_pay_status(p_id, "honored")
+                            st.toast(f"✅ PTP #{p_id} ({p_name}) marked as Honored & Settled!", icon="✓")
+                            st.rerun()
+                        if st.button("❌ Breach", key=f"btn_brch_{p_id}", use_container_width=True):
+                            update_promise_to_pay_status(p_id, "breached")
+                            st.toast(f"⚠️ PTP #{p_id} ({p_name}) marked as Breached. Dunning resumed.", icon="⚠️")
+                            st.rerun()
+                    else:
+                        st.markdown(f"<div style='text-align:center; font-size:11px; font-weight:700; color:#64748b; padding-top:14px; text-transform:uppercase;'>{p_stat}</div>", unsafe_allow_html=True)
+                        
     with ptp_col_new:
         st.markdown("#### ➕ Book Manual PTP Commitment")
         st.caption("Log offline or phone agreements made by merchant collectors:")
