@@ -1513,23 +1513,16 @@ with track_tab_b2c:
             amt = float(row_data["amount"])
             b_id = row_data.get("batch_id", "")
             is_rec = bool(row_data.get("recovered", 0))
+            t_raw_info = raw_txn_map.get(t_id, {})
+            t_failed_data = t_raw_info.get("failed_instrument_info") or {}
+            t_rec_data = t_raw_info.get("recommended_instrument_info") or {}
 
-            rec_item = (
-                RECOMMENDED_METHODS[t_id]
-                if t_id in RECOMMENDED_METHODS
-                else RECOMMENDED_METHODS.get("pay_001", {})
-            )
-            failed_it = (
-                FAILED_INSTRUMENTS[t_id]
-                if t_id in FAILED_INSTRUMENTS
-                else FAILED_INSTRUMENTS.get("pay_001", {})
-            )
-            fail_name = failed_it.get("name", "Card / UPI / NetBanking")
-            fail_r = failed_it.get("reason", "Payment failed at issuing bank")
-            fail_c = failed_it.get("code", "AUTH_FAILED")
-            pay_name = rec_item.get("instrument", "Kotak Mahindra Bank Savings A/c (•••• 6153) via BHIM")
-            vpa = rec_item.get("vpa", f"{t_id}@kotakbank")
-            why = rec_item.get("routing_reason", "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)")
+            fail_name = t_failed_data.get("instrument_name", "Card / UPI / NetBanking")
+            fail_r = t_failed_data.get("error_description", "Payment failed at issuing bank")
+            fail_c = t_failed_data.get("error_code", "AUTH_FAILED")
+            pay_name = t_rec_data.get("instrument", "Kotak Mahindra Bank Savings A/c (•••• 6153) via BHIM")
+            vpa = t_rec_data.get("vpa", f"{t_id}@kotakbank")
+            why = t_rec_data.get("routing_reason", "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)")
 
             if not is_rec:
                 st.markdown(f"""
