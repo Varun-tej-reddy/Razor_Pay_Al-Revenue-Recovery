@@ -706,25 +706,62 @@ render_html("""
         color: #ffffff !important;
     }
 
-    /* Segmented Control Pill Bar */
-    div[data-testid="stSegmentedControl"] {
+    /* Segmented Control Pill Bar - Vibrant Razorpay Active States */
+    div[data-testid="stSegmentedControl"],
+    div[data-baseweb="button-group"] {
         background: #ffffff !important;
-        border: 1.5px solid #cbd5e1 !important;
-        border-radius: 12px !important;
+        border: 2px solid #cbd5e1 !important;
+        border-radius: 9999px !important;
         padding: 4px !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+        display: flex !important;
+        width: 100% !important;
     }
-    div[data-testid="stSegmentedControl"] button {
-        border-radius: 8px !important;
+    div[data-testid="stSegmentedControl"] button,
+    div[data-baseweb="button-group"] button,
+    button[data-testid="stSegmentedControlButton"] {
+        border-radius: 9999px !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        padding: 8px 18px !important;
+        border: 1px solid transparent !important;
+        background: transparent !important;
+        color: #334155 !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        flex: 1 !important;
+    }
+    div[data-testid="stSegmentedControl"] button *,
+    div[data-baseweb="button-group"] button *,
+    button[data-testid="stSegmentedControlButton"] * {
+        color: #334155 !important;
         font-weight: 700 !important;
     }
-    div[data-testid="stSegmentedControl"] button[aria-checked="false"] * {
-        color: #334155 !important;
+    /* Active Selected State - Bold Dodger Blue */
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"],
+    div[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+    div[data-testid="stSegmentedControl"] button[data-selected="true"],
+    div[data-testid="stSegmentedControl"] button[data-active="true"],
+    div[data-baseweb="button-group"] button[aria-checked="true"],
+    div[data-baseweb="button-group"] button[aria-pressed="true"],
+    button[data-testid="stSegmentedControlButton"][aria-checked="true"],
+    button[data-testid="stSegmentedControlButton"][aria-pressed="true"],
+    button[data-testid="stSegmentedControlButton"][data-active="true"],
+    button[data-testid="stSegmentedControlButton"]:has(input:checked) {
+        background: linear-gradient(135deg, #0D94FB 0%, #0052cc 100%) !important;
+        border-color: #0052cc !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(13, 148, 251, 0.45) !important;
     }
-    div[data-testid="stSegmentedControl"] button[aria-checked="true"] {
-        background: #0052cc !important;
-    }
-    div[data-testid="stSegmentedControl"] button[aria-checked="true"] * {
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"] *,
+    div[data-testid="stSegmentedControl"] button[aria-pressed="true"] *,
+    div[data-testid="stSegmentedControl"] button[data-selected="true"] *,
+    div[data-testid="stSegmentedControl"] button[data-active="true"] *,
+    div[data-baseweb="button-group"] button[aria-checked="true"] *,
+    div[data-baseweb="button-group"] button[aria-pressed="true"] *,
+    button[data-testid="stSegmentedControlButton"][aria-checked="true"] *,
+    button[data-testid="stSegmentedControlButton"][aria-pressed="true"] *,
+    button[data-testid="stSegmentedControlButton"][data-active="true"] *,
+    button[data-testid="stSegmentedControlButton"]:has(input:checked) * {
         color: #ffffff !important;
         font-weight: 800 !important;
     }
@@ -1196,6 +1233,20 @@ with track_tab_b2c:
     current_txn_ids = filtered_df["transaction_id"].tolist()
     if st.session_state.selected_txn_id not in current_txn_ids and current_txn_ids:
         st.session_state.selected_txn_id = current_txn_ids[0]
+
+    # Active filter status indicator
+    render_html(f"""
+    <div style="display:flex; justify-content:space-between; align-items:center; background:#f0f9ff; border:1.5px solid #bae6fd; border-radius:10px; padding:10px 16px; margin: 12px 0 16px 0; font-size:12.5px; color:#0369a1; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.06);">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="background:linear-gradient(135deg, #0D94FB 0%, #0052cc 100%); color:#ffffff; font-weight:800; font-size:10px; padding:3px 8px; border-radius:9999px; box-shadow:0 2px 6px rgba(13,148,251,0.3);">ACTIVE FILTER VIEW</span>
+            <strong>{selected_filter}</strong>
+            <span style="color:#64748b;">• Showing <strong>{len(filtered_df)}</strong> matching checkout records</span>
+        </div>
+        <div style="font-weight:800; color:#0c2340; font-size:13px;">
+            Filtered Revenue: <span style="color:#0284c7;">₹{filtered_df['amount'].sum():,.2f}</span>
+        </div>
+    </div>
+    """)
 
     # --- Master-Detail Grid: Live Drop-Off Feed vs Razorpay Smart Terminal ---
     col_feed, col_terminal = st.columns([1.15, 1.45], gap="medium")
@@ -2635,25 +2686,60 @@ with track_tab_mandate:
             
             c_color = "#065f46" if "Low" in congestion else ("#d97706" if "Moderate" in congestion else "#0284c7")
             
-            render_html(f"""
-            <div class="mandate-step-card">
-                <div class="mandate-step-num">{step_num}</div>
-                <div style="flex:1;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <span style="font-size:13px; font-weight:800; color:#0c2340;">{timing}</span>
-                        <span style="font-size:10px; font-weight:800; color:{c_color}; background:#f1f5f9; padding:2px 8px; border-radius:9999px;">
-                            Switch Congestion: {congestion}
-                        </span>
-                    </div>
-                    <div style="font-size:12px; font-weight:700; color:#0369a1; margin-bottom:4px;">
-                        {action.replace('_', ' ').title()}
-                    </div>
-                    <div style="font-size:11px; color:#475569; line-height:1.4;">
-                        {reason}
-                    </div>
+        # Define Dialog for Mandate Swarm Execution
+        dialog_decorator = getattr(st, "dialog", getattr(st, "experimental_dialog", lambda title: lambda func: func))
+        
+        @dialog_decorator(f"🔄 Mandate Retry Swarm Armed • {active_id}")
+        def show_mandate_swarm_dialog(m_data, sched_data):
+            st.markdown(f"""
+            <div style="border:1.5px solid #86efac; background:#f0fdf4; border-radius:10px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="background:#166534; color:#ffffff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px;">
+                        ● SWARM EXECUTION SCHEDULED
+                    </span>
+                    <span style="color:#166534; font-weight:700; font-size:12px;">OFF-PEAK 06:15 AM IST</span>
                 </div>
+                <h4 style="margin:4px 0 8px 0; color:#14532d;">Auto-Debit Optimization Armed</h4>
+                <div style="font-size:12px; color:#1e293b; line-height:1.6;">
+                    <strong>Customer / Entity:</strong> {m_data.get('customer_name')} ({m_data.get('customer_email')})<br>
+                    <strong>Subscription:</strong> {m_data.get('plan_name')} • <strong>Amount:</strong> ₹{m_data.get('recurring_amount'):,.2f}<br>
+                    <strong>Banking Rail:</strong> {m_data.get('bank_name')} ({m_data.get('mandate_auth_type')})<br>
+                    <strong>Next Auto-Debit Dispatch:</strong> <strong style="color:#166534;">Tomorrow 06:15 AM IST (Congestion: 4.2% Low)</strong>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("##### 🛰️ Autonomous Sequencer Sequence Dispatched:")
+            st.markdown(f"""
+            * **Step 1 (06:15 AM):** Primary auto-debit attempt against `{m_data.get('bank_name')}` via high-priority NPCI queue.
+            * **Step 2 (08:30 AM):** Secondary retry with intelligent dynamic routing fallback if switch latency > 800ms.
+            * **Step 3 (10:00 AM):** Automated 1-Click Biometric UPI WhatsApp fallback link dispatched if bank rails fail.
+            """)
+            
+            col_s1, col_s2 = st.columns([1, 1])
+            with col_s1:
+                if st.button("📡 Verify Telemetry Connection", key=f"dlg_btn_telemetry_{active_id}", use_container_width=True):
+                    st.toast("Telemetry connection verified with NPCI e-Mandate switch.", icon="⚡")
+            with col_s2:
+                if st.button("✕ Close Dialog", key=f"dlg_btn_close_swarm_{active_id}", use_container_width=True):
+                    st.rerun()
+
+        is_swarm_active = st.session_state.get(f"mandate_swarm_active_{active_id}", False)
+        
+        if is_swarm_active:
+            render_html(f"""
+            <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; padding:10px 14px; margin:12px 0; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(22, 101, 52, 0.08);">
+                <div>
+                    <span style="background:#166534; color:#ffffff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:4px; margin-right:8px;">● ARMED & RUNNING</span>
+                    <strong style="color:#14532d; font-size:12.5px;">Off-Peak Retry Sequence Scheduled for {active_id}</strong>
+                </div>
+                <span style="color:#166534; font-weight:800; font-size:12px;">Next Retry: 06:15 AM IST</span>
             </div>
             """)
             
-        if st.button(f"⚡ Execute Mandate Retry Swarm for {active_id}", use_container_width=True, type="primary"):
+        btn_label = f"✓ Swarm Armed & Running for {active_id} (Click to View / Re-arm)" if is_swarm_active else f"⚡ Execute Mandate Retry Swarm for {active_id}"
+        
+        if st.button(btn_label, key=f"btn_mandate_swarm_{active_id}", use_container_width=True, type="primary"):
+            st.session_state[f"mandate_swarm_active_{active_id}"] = True
             st.toast(f"✅ Autonomous retry sequence armed for {active_id}! Off-peak execution scheduled.", icon="🔄")
+            show_mandate_swarm_dialog(active_mandate, mandate_schedule)
