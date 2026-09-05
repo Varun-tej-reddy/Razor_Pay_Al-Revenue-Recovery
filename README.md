@@ -1,18 +1,21 @@
 # RazorRevive ⚡ Autonomous AI Revenue Recovery Agent
 ### Razorpay Track 03: Autonomous Checkout Drop-Off Recovery Agent: From Telemetry to Captured Revenue
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render%20Cloud-00C7B7?style=for-the-badge&logo=render&logoColor=white)](https://razor-pay-al-revenue-recovery.onrender.com/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.32.0-FF4B4B.svg)](https://streamlit.io)
 [![Gemini 3.6 Flash](https://img.shields.io/badge/Google%20Gemini-3.6%20Flash-4285F4.svg)](https://ai.google.dev/)
-[![Tests](https://img.shields.io/badge/Tests-46%2F46%20Passing%20(100%25)-success.svg)](https://pytest.org)
+[![Tests](https://img.shields.io/badge/Tests-47%2F47%20Passing%20(100%25)-success.svg)](https://pytest.org)
 [![Razorpay Blade UI](https://img.shields.io/badge/Theme-Razorpay%20Blade%20Navy%20%26%20Blue-0D94FB.svg)](https://blade.razorpay.com)
 
-> **"Don't just diagnose why transactions drop off. Measure recovered revenue, enforce compliant dunning guardrails, negotiate in natural Indian Hinglish, and record every rupee in an immutable audit ledger."**
+> 🌐 **Live Cloud Deployment**: [https://razor-pay-al-revenue-recovery.onrender.com/](https://razor-pay-al-revenue-recovery.onrender.com/)  
+> *"Don't just diagnose why transactions drop off. Measure recovered revenue, enforce compliant dunning guardrails, negotiate in natural Indian Hinglish, and record every rupee in an immutable audit ledger."*
 
 ---
 
 ## 📑 Table of Contents
+0. [🌐 Live Interactive Demo](#-live-interactive-demo)
 1. [Executive Summary & Problem Statement](#-1-executive-summary--problem-statement)
 2. [Key Highlights & Innovation](#-2-key-highlights--innovation)
 3. [Multi-Agent Swarm Architecture](#-3-multi-agent-swarm-architecture)
@@ -20,7 +23,21 @@
 5. [Benchmark Metrics & Evaluation Report](#-5-benchmark-metrics--evaluation-report)
 6. [Live Jury Demo Script](#-6-live-2-minute-jury-demo-script)
 7. [Local Quickstart & Setup Guide](#-7-local-quickstart--setup-guide)
-8. [Test Suite Verification (46/46 Passing)](#-10-test-suite-verification-4646-passing)
+8. [Test Suite Verification (47/47 Passing)](#-10-test-suite-verification-4646-passing)
+
+---
+
+## 🌐 Live Interactive Demo
+
+Access the live production deployment hosted on Render Cloud:
+
+🔗 **[https://razor-pay-al-revenue-recovery.onrender.com/](https://razor-pay-al-revenue-recovery.onrender.com/)**
+
+- ✅ **Full Multi-Agent Pipeline Running Live**
+- 🎙️ **Interactive Hinglish Voice & Chat AI Concierge**
+- ⚡ **1-Click Biometric Settlement & Dynamic Vector QR Modal**
+- 📊 **Real-time PTP Ledger & B2B Invoicing Suite**
+
 
 ---
 
@@ -186,7 +203,7 @@ cp .env.example .env
 ```bash
 pytest tests/ -v
 ```
-*(All 46 unit & integration tests will pass in ~30 seconds)*
+*(All 47 unit & integration tests will pass in ~30 seconds)*
 
 ### Step 5: Launch the Application
 ```bash
@@ -195,26 +212,26 @@ streamlit run dashboard/app.py
 ```
 Open your browser at **`http://localhost:8501`**.
 
-## 🧪 8. Test Suite Verification (46/46 Passing)
+## 🧪 8. Test Suite Verification (47/47 Passing)
 
 RazorRevive includes exhaustive test coverage across all subsystems:
 
 ```bash
 $ pytest tests/
 ============================= test session starts ==============================
-collected 46 items
+collected 47 items
 
 tests/test_api.py ....                                                   [  8%]
 tests/test_decider.py .......                                            [ 23%]
-tests/test_detector.py ...                                               [ 30%]
-tests/test_diagnoser.py ....                                             [ 39%]
-tests/test_executor.py ....                                              [ 47%]
-tests/test_gemini_integration.py .....                                   [ 58%]
-tests/test_guardrail.py ......                                           [ 71%]
-tests/test_pipeline.py .                                                 [ 73%]
-tests/test_track03_suite.py ............                                 [100%]
+tests/test_detector.py ...                                               [ 29%]
+tests/test_diagnoser.py ....                                             [ 38%]
+tests/test_executor.py ....                                              [ 46%]
+tests/test_gemini_integration.py .....                                   [ 57%]
+tests/test_guardrail.py ......                                           [ 70%]
+tests/test_pipeline.py .                                                 [ 72%]
+tests/test_track03_suite.py .............                                [100%]
 
-============================= 46 passed in 33.68s ==============================
+============================= 47 passed in 33.41s ==============================
 ```
 
 ---
