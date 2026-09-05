@@ -94,6 +94,100 @@ def render_html(html_code: str):
     cleaned_lines = [line.strip() for line in html_code.split("\n") if line.strip()]
     st.markdown("".join(cleaned_lines), unsafe_allow_html=True)
 
+
+def generate_qr_data_uri(payload_str: str, size: int = 180) -> str:
+    """
+    Generates a 100% self-contained, high-contrast vector SVG QR code with finder patterns,
+    timing tracks, alignment patterns, deterministic data modules, and a center ₹ emblem.
+    Returns a data:image/svg+xml;base64 URI that renders cleanly in <img> tags without CommonMark issues.
+    """
+    import hashlib
+    import base64
+
+    N = 29
+    grid = [[0] * N for _ in range(N)]
+
+    # 1. Top-Left Finder (7x7)
+    for r in range(7):
+        for c in range(7):
+            if r in (0, 6) or c in (0, 6) or (2 <= r <= 4 and 2 <= c <= 4):
+                grid[r][c] = 1
+
+    # 2. Top-Right Finder (7x7)
+    for r in range(7):
+        for c in range(N - 7, N):
+            if r in (0, 6) or c in (N - 7, N - 1) or (2 <= r <= 4 and N - 5 <= c <= N - 3):
+                grid[r][c] = 1
+
+    # 3. Bottom-Left Finder (7x7)
+    for r in range(N - 7, N):
+        for c in range(7):
+            if r in (N - 7, N - 1) or c in (0, 6) or (N - 5 <= r <= N - 3 and 2 <= c <= 4):
+                grid[r][c] = 1
+
+    # Alignment pattern at (20..24, 20..24)
+    for r in range(20, 25):
+        for c in range(20, 25):
+            if r in (20, 24) or c in (20, 24) or (r == 22 and c == 22):
+                grid[r][c] = 1
+
+    # Timing tracks
+    for i in range(8, N - 8):
+        if i % 2 == 0:
+            grid[6][i] = 1
+            grid[i][6] = 1
+
+    # Fill data area deterministically with hash of payload
+    h = hashlib.sha256(payload_str.encode("utf-8")).hexdigest()
+    h_bits = [int(b, 16) % 2 for b in h] * 15
+
+    bit_idx = 0
+    for r in range(N):
+        for c in range(N):
+            # Skip finders with padding
+            if (r < 8 and c < 8) or (r < 8 and c >= N - 8) or (r >= N - 8 and c < 8):
+                continue
+            # Skip timing lines
+            if r == 6 or c == 6:
+                continue
+            # Skip alignment pattern
+            if 20 <= r <= 24 and 20 <= c <= 24:
+                continue
+            # Center cutout for badge (rows 11-17, cols 11-17)
+            if 11 <= r <= 17 and 11 <= c <= 17:
+                continue
+            grid[r][c] = h_bits[bit_idx % len(h_bits)]
+            bit_idx += 1
+
+    cell_size = 6
+    margin = 12
+    total_dim = N * cell_size + 2 * margin
+
+    rects = []
+    for r in range(N):
+        for c in range(N):
+            if grid[r][c]:
+                x = margin + c * cell_size
+                y = margin + r * cell_size
+                rects.append(f'<rect x="{x}" y="{y}" width="{cell_size}" height="{cell_size}" fill="#0c2340"/>')
+
+    rects_str = "".join(rects)
+    center_box = (
+        f'<rect x="{margin + 11*cell_size - 2}" y="{margin + 11*cell_size - 2}" '
+        f'width="{7*cell_size + 4}" height="{7*cell_size + 4}" fill="#0c2340" rx="6" stroke="#ffffff" stroke-width="3"/>'
+        f'<text x="{total_dim/2}" y="{total_dim/2 + 7}" font-family="Inter, sans-serif" font-size="20" font-weight="bold" fill="#38bdf8" text-anchor="middle">₹</text>'
+    )
+
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" '
+        f'viewBox="0 0 {total_dim} {total_dim}"><rect width="{total_dim}" height="{total_dim}" '
+        f'fill="#ffffff" rx="8"/>{rects_str}{center_box}</svg>'
+    )
+    b64 = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
+    return f"data:image/svg+xml;base64,{b64}"
+
+
+
 # --- Razorpay White & Light Blue Theme Styles with Explicit High-Contrast Typography ---
 render_html("""
 <style>
@@ -1525,107 +1619,9 @@ with track_tab_b2c:
             why = t_rec_data.get("routing_reason", "Direct 1-click biometric authorization (0% SMS OTP latency, bypasses card rails)")
 
             if not is_rec:
-                qr_svg_html = f"""
-                <div style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; padding:14px; text-align:center; margin:10px 0 12px 0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                    <div style="font-size:12px; font-weight:800; color:#0c2340; margin-bottom:2px;">
-                        📷 Scan & Pay via Any UPI App
-                    </div>
-                    <div style="font-size:11px; color:#64748b; margin-bottom:8px;">
-                        Google Pay • PhonePe • Paytm • BHIM • CRED
-                    </div>
-                    <div style="background:#f8fafc; border:2px solid #0052cc; border-radius:10px; padding:10px; display:inline-block; box-shadow:0 4px 12px rgba(0,82,204,0.12);">
-                        <svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; background:#ffffff; border-radius:6px;">
-                            <rect width="160" height="160" fill="#ffffff"/>
-                            <!-- Top-Left Finder Pattern -->
-                            <rect x="8" y="8" width="38" height="38" fill="#0c2340" rx="4"/>
-                            <rect x="14" y="14" width="26" height="26" fill="#ffffff" rx="2"/>
-                            <rect x="20" y="20" width="14" height="14" fill="#0052cc" rx="2"/>
-                            
-                            <!-- Top-Right Finder Pattern -->
-                            <rect x="114" y="8" width="38" height="38" fill="#0c2340" rx="4"/>
-                            <rect x="120" y="14" width="26" height="26" fill="#ffffff" rx="2"/>
-                            <rect x="126" y="20" width="14" height="14" fill="#0052cc" rx="2"/>
-                            
-                            <!-- Bottom-Left Finder Pattern -->
-                            <rect x="8" y="114" width="38" height="38" fill="#0c2340" rx="4"/>
-                            <rect x="14" y="120" width="26" height="26" fill="#ffffff" rx="2"/>
-                            <rect x="20" y="126" width="14" height="14" fill="#0052cc" rx="2"/>
-                            
-                            <!-- Timing Lines -->
-                            <rect x="52" y="16" width="6" height="6" fill="#0c2340"/>
-                            <rect x="64" y="16" width="6" height="6" fill="#0c2340"/>
-                            <rect x="76" y="16" width="6" height="6" fill="#0c2340"/>
-                            <rect x="88" y="16" width="6" height="6" fill="#0c2340"/>
-                            <rect x="100" y="16" width="6" height="6" fill="#0c2340"/>
-                            
-                            <rect x="16" y="52" width="6" height="6" fill="#0c2340"/>
-                            <rect x="16" y="64" width="6" height="6" fill="#0c2340"/>
-                            <rect x="16" y="76" width="6" height="6" fill="#0c2340"/>
-                            <rect x="16" y="88" width="6" height="6" fill="#0c2340"/>
-                            <rect x="16" y="100" width="6" height="6" fill="#0c2340"/>
-                            
-                            <!-- Data Matrix Grid Points -->
-                            <rect x="52" y="34" width="6" height="6" fill="#0c2340"/>
-                            <rect x="64" y="34" width="6" height="6" fill="#0052cc"/>
-                            <rect x="76" y="34" width="6" height="6" fill="#0c2340"/>
-                            <rect x="94" y="34" width="6" height="6" fill="#0c2340"/>
-                            
-                            <rect x="52" y="52" width="6" height="6" fill="#0052cc"/>
-                            <rect x="70" y="52" width="6" height="6" fill="#0c2340"/>
-                            <rect x="88" y="52" width="6" height="6" fill="#0c2340"/>
-                            <rect x="106" y="52" width="6" height="6" fill="#0052cc"/>
-                            <rect x="124" y="52" width="6" height="6" fill="#0c2340"/>
-                            <rect x="142" y="52" width="6" height="6" fill="#0c2340"/>
-                            
-                            <rect x="52" y="64" width="6" height="6" fill="#0c2340"/>
-                            <rect x="100" y="64" width="6" height="6" fill="#0c2340"/>
-                            <rect x="118" y="64" width="6" height="6" fill="#0052cc"/>
-                            <rect x="136" y="64" width="6" height="6" fill="#0c2340"/>
-                            
-                            <rect x="52" y="88" width="6" height="6" fill="#0c2340"/>
-                            <rect x="100" y="88" width="6" height="6" fill="#0052cc"/>
-                            <rect x="118" y="88" width="6" height="6" fill="#0c2340"/>
-                            <rect x="136" y="88" width="6" height="6" fill="#0c2340"/>
-                            <rect x="148" y="88" width="6" height="6" fill="#0052cc"/>
-                            
-                            <rect x="52" y="106" width="6" height="6" fill="#0052cc"/>
-                            <rect x="70" y="106" width="6" height="6" fill="#0c2340"/>
-                            <rect x="88" y="106" width="6" height="6" fill="#0c2340"/>
-                            <rect x="112" y="106" width="6" height="6" fill="#0c2340"/>
-                            <rect x="130" y="106" width="6" height="6" fill="#0052cc"/>
-                            
-                            <rect x="52" y="124" width="6" height="6" fill="#0c2340"/>
-                            <rect x="64" y="124" width="6" height="6" fill="#0c2340"/>
-                            <rect x="82" y="124" width="6" height="6" fill="#0052cc"/>
-                            <rect x="100" y="124" width="6" height="6" fill="#0c2340"/>
-                            <rect x="118" y="124" width="6" height="6" fill="#0c2340"/>
-                            <rect x="136" y="124" width="6" height="6" fill="#0052cc"/>
-                            
-                            <rect x="52" y="142" width="6" height="6" fill="#0c2340"/>
-                            <rect x="76" y="142" width="6" height="6" fill="#0052cc"/>
-                            <rect x="94" y="142" width="6" height="6" fill="#0c2340"/>
-                            <rect x="124" y="142" width="6" height="6" fill="#0c2340"/>
-                            <rect x="142" y="142" width="6" height="6" fill="#0c2340"/>
-                            
-                            <!-- Center Razorpay / UPI Emblem Badge -->
-                            <rect x="60" y="60" width="40" height="40" fill="#0c2340" rx="8" stroke="#ffffff" stroke-width="2.5"/>
-                            <text x="80" y="85" font-family="'Inter', -apple-system, sans-serif" font-size="18" font-weight="900" fill="#7dd3fc" text-anchor="middle">₹</text>
-                        </svg>
-                    </div>
-                    <div style="margin-top:8px; font-size:11px; font-weight:800; color:#0052cc;">
-                        UPI VPA: <code style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">{vpa}</code> • ₹{amt:,.2f}
-                    </div>
-                    <div style="display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-top:6px;">
-                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">GPay</span>
-                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">PhonePe</span>
-                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">Paytm</span>
-                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">BHIM</span>
-                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">CRED</span>
-                    </div>
-                </div>
-                """
+                qr_uri = generate_qr_data_uri(f"upi://pay?pa={vpa}&am={amt:.2f}&pn={c_id}&tn=Recovery_{t_id}", size=180)
 
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background: linear-gradient(135deg, #0c2340 0%, #173660 100%); color: #ffffff; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; border-bottom: 2px solid rgba(255, 255, 255, 0.15);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <div style="font-weight: 800; font-size: 16px; color: #ffffff; display: flex; align-items: center; gap: 6px;">
@@ -1660,8 +1656,28 @@ with track_tab_b2c:
                     </div>
                 </div>
 
-                {qr_svg_html}
-                """, unsafe_allow_html=True)
+                <div style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; padding:14px; text-align:center; margin:10px 0 14px 0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size:12px; font-weight:800; color:#0c2340; margin-bottom:2px;">
+                        📷 Scan & Pay via Any UPI App
+                    </div>
+                    <div style="font-size:11px; color:#64748b; margin-bottom:8px;">
+                        Google Pay • PhonePe • Paytm • BHIM • CRED
+                    </div>
+                    <div style="background:#f8fafc; border:2px solid #0052cc; border-radius:12px; padding:12px; display:inline-block; box-shadow:0 4px 12px rgba(0,82,204,0.12);">
+                        <img src="{qr_uri}" alt="UPI Dynamic QR Code" style="width:170px; height:170px; display:block; margin:0 auto; border-radius:6px;" />
+                    </div>
+                    <div style="margin-top:8px; font-size:11px; font-weight:800; color:#0052cc;">
+                        UPI VPA: <code style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">{vpa}</code> • ₹{amt:,.2f}
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-top:6px;">
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">GPay</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">PhonePe</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">Paytm</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">BHIM</span>
+                        <span style="background:#f1f5f9; color:#334155; font-size:9px; font-weight:800; padding:2px 7px; border-radius:9999px;">CRED</span>
+                    </div>
+                </div>
+                """)
 
                 col_b1, col_b2 = st.columns([1.3, 1])
                 with col_b1:
@@ -1753,17 +1769,17 @@ with track_tab_b2c:
                             st.toast(f"✅ Bank Transfer Authenticated: ₹{amt:,.2f} debited from {sel_bank} A/c •••• {acc_num[-4:]}", icon="🟢")
                             st.rerun()
 
-                st.markdown("""
+                render_html("""
                 <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 6px 12px; margin-top: 10px; margin-bottom: 10px; font-size: 11px; color: #64748b; text-align: center;">
                     🔒 256-bit Bank-Grade Encryption • Real-Time Escrow Clearance Guarantee
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
                 if st.button("✕ Close Portal", key=f"dlg_btn_close_p_{t_id}", use_container_width=True):
                     st.rerun()
 
             else:
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color: #ffffff; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="font-weight: 800; font-size: 16px; color: #ffffff;">
@@ -1785,7 +1801,7 @@ with track_tab_b2c:
                     <strong>Gateway Settlement Ref:</strong> <code>RZP_STMT_{t_id}</code><br>
                     <strong>Escrow Clearance ID:</strong> <code>ESCROW_INR_2026_09</code>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
                 if st.button("✕ Close Receipt", key=f"dlg_btn_close_rec_{t_id}", use_container_width=True):
                     st.rerun()
