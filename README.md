@@ -18,7 +18,7 @@
 3. [Multi-Agent Swarm Architecture](#-3-multi-agent-swarm-architecture)
 4. [The 5 Core Application Tracks & Interactive Modules](#-4-the-5-core-application-tracks--interactive-modules)
 5. [Benchmark Metrics & Evaluation Report](#-5-benchmark-metrics--evaluation-report)
-6. [Live 2-Minute Jury Demo Script](#-6-live-2-minute-jury-demo-script)
+6. [Live Jury Demo Script](#-6-live-2-minute-jury-demo-script)
 7. [Local Quickstart & Setup Guide](#-7-local-quickstart--setup-guide)
 8. [Test Suite Verification (46/46 Passing)](#-10-test-suite-verification-4646-passing)
 
