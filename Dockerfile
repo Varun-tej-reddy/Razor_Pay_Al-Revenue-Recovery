@@ -38,9 +38,6 @@ ENV PYTHONUNBUFFERED=1 \
 # Create data directory for SQLite persistence volume
 RUN mkdir -p /app/data
 
-EXPOSE 8000
+EXPOSE 8501 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "streamlit run dashboard/app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false"]
