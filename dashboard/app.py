@@ -628,54 +628,66 @@ render_html("""
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
     }
 
-    /* Secondary Buttons (Default: inspect, manage, quick prompts, etc.) */
+    /* Secondary Buttons (Default) */
+    div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"],
     button[data-testid="stBaseButton-secondary"],
-    div[data-testid="stButton"] button:not([kind="primary"]) {
+    div[data-testid="stButton"] button:not([data-testid="stBaseButton-primary"]):not([kind="primary"]) {
         background-color: #ffffff !important;
         color: #0c2340 !important;
         border: 1.5px solid #cbd5e1 !important;
     }
+    div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"] *,
     button[data-testid="stBaseButton-secondary"] *,
-    div[data-testid="stButton"] button:not([kind="primary"]) * {
+    div[data-testid="stButton"] button:not([data-testid="stBaseButton-primary"]):not([kind="primary"]) * {
         color: #0c2340 !important;
         font-weight: 700 !important;
     }
+    div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"]:hover,
     button[data-testid="stBaseButton-secondary"]:hover,
-    div[data-testid="stButton"] button:not([kind="primary"]):hover {
+    div[data-testid="stButton"] button:not([data-testid="stBaseButton-primary"]):not([kind="primary"]):hover {
         background-color: #f0f7ff !important;
         border-color: #0052cc !important;
         color: #0052cc !important;
         transform: translateY(-1px) !important;
         box-shadow: 0 3px 10px rgba(0, 82, 204, 0.12) !important;
     }
+    div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"]:hover *,
     button[data-testid="stBaseButton-secondary"]:hover *,
-    div[data-testid="stButton"] button:not([kind="primary"]):hover * {
+    div[data-testid="stButton"] button:not([data-testid="stBaseButton-primary"]):not([kind="primary"]):hover * {
         color: #0052cc !important;
     }
 
-    /* Primary Action Buttons (Authorize Payment, Re-Run, Form Submit) */
+    /* Primary Action Buttons (Vibrant Dodger Blue Active State) */
+    div[data-testid="stButton"] button[data-testid="stBaseButton-primary"],
     button[data-testid="stBaseButton-primary"],
+    div[data-testid="stButton"] button[kind="primary"],
     button[kind="primary"],
     div[data-testid="stFormSubmitButton"] button {
+        background: linear-gradient(135deg, #0D94FB 0%, #0052cc 100%) !important;
         background-color: #0052cc !important;
         color: #ffffff !important;
         border: 1.5px solid #0052cc !important;
-        box-shadow: 0 3px 12px rgba(0, 82, 204, 0.28) !important;
+        box-shadow: 0 4px 14px rgba(13, 148, 251, 0.4) !important;
     }
+    div[data-testid="stButton"] button[data-testid="stBaseButton-primary"] *,
     button[data-testid="stBaseButton-primary"] *,
+    div[data-testid="stButton"] button[kind="primary"] *,
     button[kind="primary"] *,
     div[data-testid="stFormSubmitButton"] button * {
         color: #ffffff !important;
         font-weight: 800 !important;
     }
+    div[data-testid="stButton"] button[data-testid="stBaseButton-primary"]:hover,
     button[data-testid="stBaseButton-primary"]:hover,
+    div[data-testid="stButton"] button[kind="primary"]:hover,
     button[kind="primary"]:hover,
     div[data-testid="stFormSubmitButton"] button:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #003d99 100%) !important;
         background-color: #003d99 !important;
         border-color: #003d99 !important;
         color: #ffffff !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 5px 16px rgba(0, 82, 204, 0.38) !important;
+        box-shadow: 0 6px 18px rgba(13, 148, 251, 0.5) !important;
     }
 
     /* Link Buttons (st.link_button) */
@@ -1211,6 +1223,14 @@ with track_tab_b2c:
     # --- High-Visibility Interactive Filter Pills ---
     if "selected_b2c_filter" not in st.session_state:
         st.session_state.selected_b2c_filter = "⚡ Actionable Drop-Offs"
+
+    render_html("""
+    <div style="display:flex; align-items:center; gap:8px; margin: 18px 0 8px 0;">
+        <span style="background:#0D94FB; color:#ffffff; font-size:10px; font-weight:800; padding:3px 8px; border-radius:4px;">INTERACTIVE QUEUE</span>
+        <span style="font-size:12.5px; font-weight:800; color:#0c2340;">SELECT FILTER VIEW:</span>
+        <span style="font-size:11px; color:#64748b;">(Click any button to switch the live drop-off feed)</span>
+    </div>
+    """)
 
     f_col1, f_col2, f_col3, f_col4 = st.columns(4)
     with f_col1:
@@ -2782,4 +2802,4 @@ with track_tab_mandate:
         if st.button(btn_label, key=f"btn_mandate_swarm_{active_id}", use_container_width=True, type="primary"):
             st.session_state[f"mandate_swarm_active_{active_id}"] = True
             st.toast(f"✅ Autonomous retry sequence armed for {active_id}! Off-peak execution scheduled.", icon="🔄")
-            show_mandate_swarm_dialog(active_mandate, mandate_schedule)
+            show_mandate_swarm_dialog(active_m, schedule)
