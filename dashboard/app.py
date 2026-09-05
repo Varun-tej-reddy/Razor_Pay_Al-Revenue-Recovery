@@ -1208,15 +1208,35 @@ with track_tab_b2c:
         </div>
     </div>
     """)
-    # --- Blade Segmented Filter Control ---
-    selected_filter = st.segmented_control(
-        "Filter Drop-Offs",
-        options=["⚡ Actionable Drop-Offs", "✓ Recovered Settled", "👔 VIP Concierge (>₹10k)", "📋 All Flagged Drop-Offs"],
-        default="⚡ Actionable Drop-Offs",
-        label_visibility="collapsed"
-    )
+    # --- High-Visibility Interactive Filter Pills ---
+    if "selected_b2c_filter" not in st.session_state:
+        st.session_state.selected_b2c_filter = "⚡ Actionable Drop-Offs"
 
-    # Filter the audit trail based on segmented control
+    f_col1, f_col2, f_col3, f_col4 = st.columns(4)
+    with f_col1:
+        is_f1 = (st.session_state.selected_b2c_filter == "⚡ Actionable Drop-Offs")
+        if st.button("⚡ Actionable Drop-Offs", key="btn_f_act", use_container_width=True, type="primary" if is_f1 else "secondary"):
+            st.session_state.selected_b2c_filter = "⚡ Actionable Drop-Offs"
+            st.rerun()
+    with f_col2:
+        is_f2 = (st.session_state.selected_b2c_filter == "✓ Recovered Settled")
+        if st.button("✓ Recovered Settled", key="btn_f_rec", use_container_width=True, type="primary" if is_f2 else "secondary"):
+            st.session_state.selected_b2c_filter = "✓ Recovered Settled"
+            st.rerun()
+    with f_col3:
+        is_f3 = (st.session_state.selected_b2c_filter == "👔 VIP Concierge (>₹10k)")
+        if st.button("👔 VIP Concierge (>₹10k)", key="btn_f_vip", use_container_width=True, type="primary" if is_f3 else "secondary"):
+            st.session_state.selected_b2c_filter = "👔 VIP Concierge (>₹10k)"
+            st.rerun()
+    with f_col4:
+        is_f4 = (st.session_state.selected_b2c_filter == "📋 All Flagged Drop-Offs")
+        if st.button("📋 All Flagged Drop-Offs", key="btn_f_all", use_container_width=True, type="primary" if is_f4 else "secondary"):
+            st.session_state.selected_b2c_filter = "📋 All Flagged Drop-Offs"
+            st.rerun()
+
+    selected_filter = st.session_state.selected_b2c_filter
+
+    # Filter the audit trail based on selected button
     if selected_filter == "✓ Recovered Settled":
         filtered_df = audit_df[audit_df["recovered"] == True]
     elif selected_filter == "⚡ Actionable Drop-Offs":
@@ -2685,6 +2705,26 @@ with track_tab_mandate:
             congestion = step.get("switch_congestion_risk", "Low (<10%)")
             
             c_color = "#065f46" if "Low" in congestion else ("#d97706" if "Moderate" in congestion else "#0284c7")
+            
+            render_html(f"""
+            <div class="mandate-step-card">
+                <div class="mandate-step-num">{step_num}</div>
+                <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-size:13px; font-weight:800; color:#0c2340;">{timing}</span>
+                        <span style="font-size:10px; font-weight:800; color:{c_color}; background:#f1f5f9; padding:2px 8px; border-radius:9999px;">
+                            Switch Congestion: {congestion}
+                        </span>
+                    </div>
+                    <div style="font-size:12px; font-weight:700; color:#0369a1; margin-bottom:4px;">
+                        {action.replace('_', ' ').title()}
+                    </div>
+                    <div style="font-size:11px; color:#475569; line-height:1.4;">
+                        {reason}
+                    </div>
+                </div>
+            </div>
+            """)
             
         # Define Dialog for Mandate Swarm Execution
         dialog_decorator = getattr(st, "dialog", getattr(st, "experimental_dialog", lambda title: lambda func: func))
